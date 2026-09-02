@@ -13,4 +13,27 @@ fun main() {
     val cantidad = readLine()?.toIntOrNull() ?: 0
 
     val montoInicial = precio * cantidad
+
+    var cuotas = 0
+    while (cuotas != 6 && cuotas != 12 && cuotas != 24) {
+        print("Ingrese N de Cuotas (Solo se permite 6, 12 o 24): ")
+        val entradaCuotas = readLine()?.toIntOrNull() ?: 0
+
+        if (entradaCuotas == 6 || entradaCuotas == 12 || entradaCuotas == 24) {
+            cuotas = entradaCuotas
+        } else {
+            println("Error: Numero de cuotas no valido. Intente de nuevo.\n")
+        }
+    }
+
+    val porcentajeInteres = when (cuotas) {
+        6 -> 0.20
+        12 -> 0.40
+        24 -> 0.60
+        else -> 0.0
+    }
+
+    val interes = montoInicial * porcentajeInteres
+    val montoAPagar = montoInicial + interes
+    val pagoMensual = montoAPagar / cuotas
 }
