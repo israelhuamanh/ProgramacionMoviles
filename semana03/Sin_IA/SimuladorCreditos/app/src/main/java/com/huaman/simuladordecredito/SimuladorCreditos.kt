@@ -36,4 +36,11 @@ fun main() {
     val interes = montoInicial * porcentajeInteres
     val montoAPagar = montoInicial + interes
     val pagoMensual = montoAPagar / cuotas
+
+    println("\n=== RESUMEN DE LA OPERACION ===")
+    println("Producto       : $nombreProducto")
+    println("Monto Inicial  : $${String.format("%.2f", montoInicial)}")
+    println("Interes        : $${String.format("%.2f", interes)}")
+    println("MONTO A PAGAR  : $${String.format("%.2f", montoAPagar)}")
+    println("PAGO MENSUAL   : $${String.format("%.2f", pagoMensual)}")
 }
