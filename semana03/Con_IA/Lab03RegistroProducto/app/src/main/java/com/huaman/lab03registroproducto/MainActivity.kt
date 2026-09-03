@@ -50,6 +50,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
     var precio by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var mostrarResumen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -91,11 +92,43 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         }
         
         Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            onClick = { mostrarResumen = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("AGREGAR PRODUCTO")
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = { 
+                    nombre = ""
+                    precio = ""
+                    cantidad = ""
+                    mostrarResumen = false
+                    errorMessage = ""
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Limpiar")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Button(
+                onClick = { 
+                    if (nombre.isBlank() || precio.isBlank() || cantidad.isBlank()) {
+                        errorMessage = "Por favor, completa todos los campos"
+                        mostrarResumen = false
+                    } else {
+                        errorMessage = ""
+                        mostrarResumen = true
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("AGREGAR PRODUCTO")
+            }
+        }
+        
+        if (errorMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = errorMessage,
+                color = androidx.compose.ui.graphics.Color.Red,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
