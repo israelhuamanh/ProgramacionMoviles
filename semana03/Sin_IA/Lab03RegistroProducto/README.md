@@ -9,11 +9,11 @@ Este es un proyecto de laboratorio para practicar la creación de interfaces de 
 
 **Pantalla Vacía:**
 *(Reemplazar con la captura de la pantalla inicial)*
-![Pantalla Inicial](pantalla_vacia.png)
+![Pantalla Inicial](./pantalla_vacia.png)
 
 **Producto Registrado:**
 *(Reemplazar con la captura luego de registrar el producto)*
-![Producto Registrado](producto_registrado.png)
+![Producto Registrado](./producto_registrado.png)
 
 ## Pregunta del Laboratorio
 **¿Qué pasaría si declaras las variables de los campos SIN `remember`?**
