@@ -123,10 +123,10 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         }
         
         if (errorMessage.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = errorMessage,
-                color = androidx.compose.ui.graphics.Color.Red,
+                color = androidx.compose.ui.graphics.Color(0xFFB00020), // Un rojo más estandar de Material Design
                 style = MaterialTheme.typography.bodyMedium
             )
         }
