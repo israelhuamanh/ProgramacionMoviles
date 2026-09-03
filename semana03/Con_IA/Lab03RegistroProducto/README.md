@@ -1,16 +1,16 @@
 # Laboratorio 03 - Registro de Producto con Jetpack Compose
+
 **Estudiante:** Israel Huaman H.
+
 ## Descripci√≥n
 Este es un proyecto de laboratorio para practicar la creaci√≥n de interfaces de usuario utilizando Jetpack Compose. Implementa un formulario de registro de producto con los campos Nombre, Precio y Cantidad, manejando el estado de la UI (con `remember` y `mutableStateOf`) y mostrando una tarjeta de resumen al presionar el bot√≥n de agregar.
-## Capturas de Pantalla
-**Pantalla Vac√≠a:**
-![Pantalla Inicial](./pantalla_vacia.png)
-**Producto Registrado:**
-![Producto Registrado](./producto_registrado.png)
+
 ## Pregunta del Laboratorio
 **¬øQu√© pasar√≠a si declaras las variables de los campos SIN `remember`?**
+
 Si se declaran las variables usando `mutableStateOf` pero sin envolverlas en `remember`, el estado no "sobrevivir√≠a" a las recomposiciones. Cada vez que el usuario ingresa un car√°cter en el `OutlinedTextField`, Compose vuelve a ejecutar la funci√≥n (recomposici√≥n). Sin `remember`, la variable de estado se reinicializar√≠a nuevamente a su valor por defecto (como `""`), y por lo tanto, el campo de texto se blanquear√≠a y no permitir√≠a escribir correctamente. `remember` le dice a Compose que recuerde el valor en la memoria a trav√©s de las recomposiciones.
+
 ## Mejora con IA
-| Prompt que usÈ | QuÈ generÛ Gemini | QuÈ aceptÈ o corregÌ (y por quÈ) |
+| Prompt que us√© | Qu√© gener√≥ Gemini | Qu√© acept√© o correg√≠ (y por qu√©) |
 |---|---|---|
-| Agrega validaciÛn de campos vacÌos y muestra un mensaje de error en rojo en vez del Card. Agrega tambiÈn un botÛn Limpiar. | GenerÛ un estado `errorMessage` y dos botones dentro de un `Row`. | AceptÈ la lÛgica principal, pero corregÌ el color del mensaje de error a un rojo de Material Design (0xFFB00020) y le aumentÈ el espaciado (Spacer a 16.dp) para que respire mejor visualmente. |
+| Agrega validaci√≥n de campos vac√≠os y muestra un mensaje de error en rojo en vez del Card. Agrega tambi√©n un bot√≥n Limpiar. | Gener√≥ un estado `errorMessage` y dos botones dentro de un `Row`. | Acept√© la l√≥gica principal, pero correg√≠ el color del mensaje de error a un rojo de Material Design (0xFFB00020) y le aument√© el espaciado (Spacer a 16.dp) para que respire mejor visualmente. |
