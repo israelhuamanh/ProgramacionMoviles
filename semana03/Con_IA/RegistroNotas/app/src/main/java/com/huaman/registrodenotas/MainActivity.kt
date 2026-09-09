@@ -163,6 +163,17 @@ fun RegistroNotasScreen() {
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
+                            // Reto opcional: Aporte por curso
+                            Text("Aportes por curso:", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.Gray)
+                            Text("FP: ${notaFP.toInt()} × 20% = ${String.format("%.2f", notaFP.toInt() * 0.20).replace(",", ".")}", fontSize = 12.sp)
+                            Text("POO: ${notaPOO.toInt()} × 25% = ${String.format("%.2f", notaPOO.toInt() * 0.25).replace(",", ".")}", fontSize = 12.sp)
+                            Text("Móviles: ${notaPM.toInt()} × 30% = ${String.format("%.2f", notaPM.toInt() * 0.30).replace(",", ".")}", fontSize = 12.sp)
+                            Text("BD: ${notaBD.toInt()} × 25% = ${String.format("%.2f", notaBD.toInt() * 0.25).replace(",", ".")}", fontSize = 12.sp)
+                            
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Divider(color = Color.LightGray)
+                            Spacer(modifier = Modifier.height(8.dp))
+
                             Text(text = "Promedio ponderado: $promedioPonderadoTexto", fontSize = 14.sp)
                             Spacer(modifier = Modifier.height(8.dp))
                             Row(verticalAlignment = Alignment.Bottom) {
