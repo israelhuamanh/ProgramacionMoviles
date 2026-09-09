@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.huaman.registrodenotas.model.RegistroAcademico
 import com.huaman.registrodenotas.ui.theme.RegistroDeNotasTheme
-import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +40,9 @@ class MainActivity : ComponentActivity() {
 fun RegistroNotasScreen() {
     val gradientColors = listOf(Color(0xFFEDE7F6), Color(0xFFFFFFFF))
     
+    // Instancia del modelo POO
+    val registroAcademico = remember { RegistroAcademico() }
+    
     var notaFP by remember { mutableFloatStateOf(0f) }
     var notaPOO by remember { mutableFloatStateOf(0f) }
     var notaPM by remember { mutableFloatStateOf(0f) }
@@ -57,7 +60,7 @@ fun RegistroNotasScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Registro de Notas", color = Color.White) },
+                title = { Text("Registro de Notas (POO)", color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF673AB7)
                 )
@@ -99,6 +102,11 @@ fun RegistroNotasScreen() {
                         redondear = false
                         confirmado = false
                         mostrarResultados = false
+                        // Reset en el modelo
+                        registroAcademico.registrarNota(0, 0.0)
+                        registroAcademico.registrarNota(1, 0.0)
+                        registroAcademico.registrarNota(2, 0.0)
+                        registroAcademico.registrarNota(3, 0.0)
                     }) {
                         Text("Limpiar", color = Color(0xFFD32F2F))
                     }
@@ -106,10 +114,22 @@ fun RegistroNotasScreen() {
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                CursoRow("Fundamentos de Programación", "20%", notaFP) { notaFP = it; mostrarResultados = false }
-                CursoRow("Programación Orientada a Objetos", "25%", notaPOO) { notaPOO = it; mostrarResultados = false }
-                CursoRow("Programación en Móviles", "30%", notaPM) { notaPM = it; mostrarResultados = false }
-                CursoRow("Base de Datos", "25%", notaBD) { notaBD = it; mostrarResultados = false }
+                CursoRow("Fundamentos de Programación", "20%", notaFP) { 
+                    notaFP = it; mostrarResultados = false 
+                    registroAcademico.registrarNota(0, it.toDouble())
+                }
+                CursoRow("Programación Orientada a Objetos", "25%", notaPOO) { 
+                    notaPOO = it; mostrarResultados = false 
+                    registroAcademico.registrarNota(1, it.toDouble())
+                }
+                CursoRow("Programación en Móviles", "30%", notaPM) { 
+                    notaPM = it; mostrarResultados = false 
+                    registroAcademico.registrarNota(2, it.toDouble())
+                }
+                CursoRow("Base de Datos", "25%", notaBD) { 
+                    notaBD = it; mostrarResultados = false 
+                    registroAcademico.registrarNota(3, it.toDouble())
+                }
                 
                 Spacer(modifier = Modifier.height(8.dp))
                 Divider(color = Color.LightGray)
@@ -148,18 +168,16 @@ fun RegistroNotasScreen() {
                 
                 Button(
                     onClick = {
-                        val ponderado = (notaFP.toInt() * 0.20) + (notaPOO.toInt() * 0.25) + (notaPM.toInt() * 0.30) + (notaBD.toInt() * 0.25)
+                        // Delegando la logica a la clase POO RegistroAcademico
+                        val ponderado = registroAcademico.calcularPromedioPonderado()
                         promedioPonderadoTexto = String.format("%.2f", ponderado).replace(",", ".")
                         
-                        val pFinal = if (redondear) ponderado.roundToInt().toDouble() else ponderado
+                        val pFinal = registroAcademico.calcularPromedioFinal(redondear)
                         promedioFinal = if (redondear) "${pFinal.toInt()}" else String.format("%.2f", pFinal).replace(",", ".")
                         
-                        when {
-                            pFinal >= 17 -> { observacion = "EXCELENTE"; colorChip = Color(0xFF2E7D32) }
-                            pFinal >= 13 -> { observacion = "APROBADO"; colorChip = Color(0xFF4CAF50) }
-                            pFinal >= 10 -> { observacion = "EN RECUPERACIÓN"; colorChip = Color(0xFFFF8F00) }
-                            else -> { observacion = "DESAPROBADO"; colorChip = Color(0xFFD32F2F) }
-                        }
+                        val obs = registroAcademico.obtenerObservacion(pFinal)
+                        observacion = obs.mensaje
+                        colorChip = Color(obs.colorHex)
                         
                         mostrarResultados = true
                     },
@@ -183,12 +201,13 @@ fun RegistroNotasScreen() {
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            // Reto opcional: Aporte por curso
+                            // Reto opcional: Aporte por curso usando POO
                             Text("Aportes por curso:", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.Gray)
-                            Text("FP: ${notaFP.toInt()} × 20% = ${String.format("%.2f", notaFP.toInt() * 0.20).replace(",", ".")}", fontSize = 12.sp)
-                            Text("POO: ${notaPOO.toInt()} × 25% = ${String.format("%.2f", notaPOO.toInt() * 0.25).replace(",", ".")}", fontSize = 12.sp)
-                            Text("Móviles: ${notaPM.toInt()} × 30% = ${String.format("%.2f", notaPM.toInt() * 0.30).replace(",", ".")}", fontSize = 12.sp)
-                            Text("BD: ${notaBD.toInt()} × 25% = ${String.format("%.2f", notaBD.toInt() * 0.25).replace(",", ".")}", fontSize = 12.sp)
+                            registroAcademico.cursos.forEach { curso ->
+                                val aporteStr = String.format("%.2f", curso.calcularAporte()).replace(",", ".")
+                                val pesoStr = "${(curso.peso * 100).toInt()}%"
+                                Text("${curso.nombre.take(3)}: ${curso.nota.toInt()} × $pesoStr = $aporteStr", fontSize = 12.sp)
+                            }
                             
                             Spacer(modifier = Modifier.height(8.dp))
                             Divider(color = Color.LightGray)
@@ -239,7 +258,7 @@ fun RegistroNotasScreen() {
             }
             
             Text(
-                text = "Desarrollado por: (tu nombre)",
+                text = "Desarrollado por: Israel Huaman (Versión POO)",
                 color = Color.Gray,
                 fontSize = 10.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
