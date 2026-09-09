@@ -73,16 +73,36 @@ fun RegistroNotasScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Notas del ciclo",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Desliza para asignar cada nota (0 a 20)",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = "Notas del ciclo",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Desliza para asignar cada nota (0 a 20)",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
+                    }
+                    
+                    TextButton(onClick = {
+                        notaFP = 0f
+                        notaPOO = 0f
+                        notaPM = 0f
+                        notaBD = 0f
+                        redondear = false
+                        confirmado = false
+                        mostrarResultados = false
+                    }) {
+                        Text("Limpiar", color = Color(0xFFD32F2F))
+                    }
+                }
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
@@ -196,6 +216,15 @@ fun RegistroNotasScreen() {
                                     fontSize = 12.sp
                                 )
                             }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "✓ Promedio calculado correctamente",
+                                color = Color(0xFF2E7D32),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 } else {
@@ -208,6 +237,13 @@ fun RegistroNotasScreen() {
                     )
                 }
             }
+            
+            Text(
+                text = "Desarrollado por: (tu nombre)",
+                color = Color.Gray,
+                fontSize = 10.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
         }
     }
 }
