@@ -42,10 +42,14 @@ fun ItemTarea(tarea: Tarea, onEliminar: () -> Unit, onCambiarEstado: (Boolean) -
     }
 }
 
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+
 @Composable
 fun PantallaTareas() {
     var textoTarea by remember { mutableStateOf("") }
     var contadorId by remember { mutableStateOf(1) }
+    val listaTareas = remember { mutableStateListOf<Tarea>() }
     
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(text = "Lista de tareas", style = MaterialTheme.typography.headlineMedium)
@@ -56,5 +60,17 @@ fun PantallaTareas() {
             label = { Text("Ingrese una tarea") },
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = {
+                if (textoTarea.isNotBlank()) {
+                    listaTareas.add(Tarea(id = contadorId, nombre = textoTarea))
+                    contadorId++
+                    textoTarea = ""
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) { Text("Agregar tarea") }
     }
 }
+
