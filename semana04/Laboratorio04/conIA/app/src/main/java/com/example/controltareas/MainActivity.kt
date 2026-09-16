@@ -30,4 +30,14 @@ class TareasViewModel : ViewModel() {
             _tareas.value = _tareas.value + Tarea(id = contadorId++, nombre = nombre)
         }
     }
+    
+    fun eliminarTarea(tarea: Tarea) {
+        _tareas.value = _tareas.value.filter { it.id != tarea.id }
+    }
+    
+    fun cambiarEstadoTarea(tarea: Tarea, completada: Boolean) {
+        _tareas.value = _tareas.value.map {
+            if (it.id == tarea.id) it.copy(completada = completada) else it
+        }
+    }
 }
