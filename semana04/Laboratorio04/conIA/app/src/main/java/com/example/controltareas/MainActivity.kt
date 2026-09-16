@@ -14,3 +14,20 @@ data class Tarea(
     val nombre: String,
     val completada: Boolean = false
 )
+
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+class TareasViewModel : ViewModel() {
+    private val _tareas = MutableStateFlow<List<Tarea>>(emptyList())
+    val tareas: StateFlow<List<Tarea>> = _tareas.asStateFlow()
+    private var contadorId = 1
+    
+    fun agregarTarea(nombre: String) {
+        if (nombre.isNotBlank()) {
+            _tareas.value = _tareas.value + Tarea(id = contadorId++, nombre = nombre)
+        }
+    }
+}
