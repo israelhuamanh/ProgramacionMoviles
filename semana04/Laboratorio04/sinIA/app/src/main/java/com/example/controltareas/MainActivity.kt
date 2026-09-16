@@ -41,3 +41,20 @@ fun ItemTarea(tarea: Tarea, onEliminar: () -> Unit, onCambiarEstado: (Boolean) -
         }
     }
 }
+
+@Composable
+fun PantallaTareas() {
+    var textoTarea by remember { mutableStateOf("") }
+    var contadorId by remember { mutableStateOf(1) }
+    
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Lista de tareas", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedTextField(
+            value = textoTarea,
+            onValueChange = { textoTarea = it },
+            label = { Text("Ingrese una tarea") },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
