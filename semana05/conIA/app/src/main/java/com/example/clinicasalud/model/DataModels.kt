@@ -39,24 +39,28 @@ abstract class ServicioMedico {
     abstract fun obtenerResumen(): String
 }
 
+import androidx.compose.runtime.mutableStateOf
+
 class Cita(
     override val id: Int,
     val medico: Medico,
     val fecha: String,
     val hora: String,
-    private var _estado: String // Encapsulamiento
+    estadoInicial: String // Encapsulamiento con estado mutable
 ) : ServicioMedico() {
 
+    private val _estado = mutableStateOf(estadoInicial)
+
     val estado: String
-        get() = _estado
+        get() = _estado.value
 
     override fun obtenerResumen(): String {
         return "Cita con ${medico.nombre} el $fecha a las $hora"
     }
     
     fun cancelarCita() {
-        if (_estado == "Confirmada") {
-            _estado = "Cancelada"
+        if (_estado.value == "Confirmada") {
+            _estado.value = "Cancelada"
         }
     }
 }

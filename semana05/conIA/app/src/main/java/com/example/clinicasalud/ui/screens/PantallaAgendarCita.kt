@@ -107,7 +107,7 @@ fun PantallaAgendarCita(
                             medico = medico,
                             fecha = fechaSeleccionada!!,
                             hora = horaSeleccionada!!,
-                            estado = "Confirmada"
+                            estadoInicial = "Confirmada"
                         )
                         onCitaAgendada(nuevaCita)
                         navController.navigate("confirmacion/${nuevaCita.id}") {
