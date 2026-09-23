@@ -1,21 +1,65 @@
 package com.example.clinicasalud.model
 
-data class Medico(
-    val id: Int,
-    val nombre: String,
-    val especialidad: String,
-    val calificacion: Double,
-    val resenas: Int,
-    val descripcion: String
+// Abstracción y Herencia
+abstract class Persona(
+    open val id: Int,
+    open val nombre: String
 )
 
-data class Cita(
-    val id: Int,
+abstract class PersonalMedico(
+    override val id: Int,
+    override val nombre: String,
+    open val calificacion: Double,
+    open val resenas: Int
+) : Persona(id, nombre) {
+    abstract fun obtenerDescripcionProfesional(): String
+}
+
+class Medico(
+    id: Int,
+    nombre: String,
+    val especialidad: String,
+    calificacion: Double,
+    resenas: Int,
+    private var _descripcion: String // Encapsulamiento
+) : PersonalMedico(id, nombre, calificacion, resenas) {
+    
+    val descripcion: String
+        get() = _descripcion
+
+    // Polimorfismo
+    override fun obtenerDescripcionProfesional(): String {
+        return "$especialidad - $_descripcion"
+    }
+}
+
+// Polimorfismo a través de una clase base abstracta
+abstract class ServicioMedico {
+    abstract val id: Int
+    abstract fun obtenerResumen(): String
+}
+
+class Cita(
+    override val id: Int,
     val medico: Medico,
     val fecha: String,
     val hora: String,
-    val estado: String // "Confirmada", "Completada"
-)
+    private var _estado: String // Encapsulamiento
+) : ServicioMedico() {
+
+    val estado: String
+        get() = _estado
+
+    override fun obtenerResumen(): String {
+        return "Cita con ${medico.nombre} el $fecha a las $hora"
+    }
+    
+    fun cancelarCita() {
+        if (_estado == "Confirmada") {
+            _estado = "Cancelada"
+        }
+    }
+}
 
 val especialidades = listOf("Cardiología", "Pediatría", "Dermatología", "Medicina General")
 
