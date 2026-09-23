@@ -1,0 +1,12 @@
+package com.huaman.lab5.navigation
+
+sealed class Screen(val route: String) {
+    // Desarrollado por: Israel Huaman Huaman
+    object Home : Screen(route = "home")
+    object List : Screen(route = "list")
+    object Profile : Screen(route = "profile")
+
+    object Detail : Screen(route = "detail/{itemId}") {
+        fun createRoute(itemId: Int): String = "detail/$itemId"
+    }
+}
