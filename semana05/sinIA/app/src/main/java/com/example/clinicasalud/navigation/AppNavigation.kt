@@ -13,12 +13,12 @@ import com.example.clinicasalud.model.medicosMuestra
 import com.example.clinicasalud.ui.screens.*
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation(navController: NavHostController, drawerState: androidx.compose.material3.DrawerState) {
     val citasAgendadas = remember { mutableStateListOf<Cita>() }
 
     NavHost(navController = navController, startDestination = "inicio") {
         composable("inicio") {
-            PantallaInicio(navController = navController)
+            PantallaInicio(navController = navController, drawerState = drawerState)
         }
         composable(
             "perfil_medico/{medicoId}",
@@ -27,7 +27,7 @@ fun AppNavigation(navController: NavHostController) {
             val medicoId = backStackEntry.arguments?.getInt("medicoId")
             val medico = medicosMuestra.find { it.id == medicoId }
             if (medico != null) {
-                PantallaPerfilMedico(navController = navController, medico = medico)
+                PantallaPerfilMedico(navController = navController, medico = medico, drawerState = drawerState)
             }
         }
         composable(
@@ -40,6 +40,7 @@ fun AppNavigation(navController: NavHostController) {
                 PantallaAgendarCita(
                     navController = navController,
                     medico = medico,
+                    drawerState = drawerState,
                     onCitaAgendada = { cita ->
                         citasAgendadas.add(cita)
                     }
@@ -53,14 +54,14 @@ fun AppNavigation(navController: NavHostController) {
             val citaId = backStackEntry.arguments?.getInt("citaId")
             val cita = citasAgendadas.find { it.id == citaId }
             if (cita != null) {
-                PantallaConfirmacion(navController = navController, cita = cita)
+                PantallaConfirmacion(navController = navController, cita = cita, drawerState = drawerState)
             }
         }
         composable("mis_citas") {
-            PantallaMisCitas(navController = navController, citas = citasAgendadas)
+            PantallaMisCitas(navController = navController, citas = citasAgendadas, drawerState = drawerState)
         }
         composable("historial") {
-            PantallaHistorial(navController = navController)
+            PantallaHistorial(navController = navController, drawerState = drawerState)
         }
     }
 }

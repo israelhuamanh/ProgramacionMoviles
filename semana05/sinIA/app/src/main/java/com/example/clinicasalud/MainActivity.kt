@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    
+                    com.example.clinicasalud.ui.MainScreen()
                 }
             }
         }
