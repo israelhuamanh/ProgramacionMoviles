@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FilterList
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Store
@@ -43,8 +45,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -95,6 +95,7 @@ fun InicioScreen(
 ) {
     var seccionActual by remember { mutableStateOf(DestinoNav.INICIO) }
     var categoriaSeleccionada by remember { mutableStateOf(listaCategorias.first()) }
+    var queryBusqueda by remember { mutableStateOf("") }
     var ordenPrecio by remember { mutableStateOf(OrdenPrecio.NINGUNO) }
     var menuOrdenExpandido by remember { mutableStateOf(false) }
 
@@ -159,17 +160,19 @@ fun InicioScreen(
         Box(modifier = Modifier.padding(paddingValues)) {
             when (seccionActual) {
                 DestinoNav.INICIO -> {
-                    // En Fase 1 (Sin_IA), el filtro activo es por categoría y orden de precio
-                    val productosPorCategoria = if (categoriaSeleccionada == "Todos") {
-                        productos
-                    } else {
-                        productos.filter { it.categoria == categoriaSeleccionada }
+                    // Filtrado en tiempo real asistido por IA combinando texto de búsqueda y categoría
+                    val productosFiltrados = productos.filter { prod ->
+                        val coincideCategoria = categoriaSeleccionada == "Todos" || prod.categoria == categoriaSeleccionada
+                        val coincideTexto = queryBusqueda.isBlank() ||
+                                prod.nombre.contains(queryBusqueda, ignoreCase = true) ||
+                                prod.descripcion.contains(queryBusqueda, ignoreCase = true)
+                        coincideCategoria && coincideTexto
                     }
 
                     val productosOrdenados = when (ordenPrecio) {
-                        OrdenPrecio.MENOR_A_MAYOR -> productosPorCategoria.sortedBy { it.precio }
-                        OrdenPrecio.MAYOR_A_MENOR -> productosPorCategoria.sortedByDescending { it.precio }
-                        OrdenPrecio.NINGUNO -> productosPorCategoria
+                        OrdenPrecio.MENOR_A_MAYOR -> productosFiltrados.sortedBy { it.precio }
+                        OrdenPrecio.MAYOR_A_MENOR -> productosFiltrados.sortedByDescending { it.precio }
+                        OrdenPrecio.NINGUNO -> productosFiltrados
                     }
 
                     Column(
@@ -179,14 +182,21 @@ fun InicioScreen(
                     ) {
                         Spacer(Modifier.height(8.dp))
 
-                        // Buscador estático en Fase 1
+                        // Campo de búsqueda en tiempo real reactivo con botón de limpiar
                         OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
-                            readOnly = true,
+                            value = queryBusqueda,
+                            onValueChange = { queryBusqueda = it },
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Buscar productos...") },
+                            placeholder = { Text("Buscar productos en tiempo real...") },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                            trailingIcon = {
+                                if (queryBusqueda.isNotEmpty()) {
+                                    IconButton(onClick = { queryBusqueda = "" }) {
+                                        Icon(Icons.Default.Clear, contentDescription = "Limpiar búsqueda")
+                                    }
+                                }
+                            },
+                            singleLine = true,
                             shape = RoundedCornerShape(12.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -218,14 +228,14 @@ fun InicioScreen(
 
                         Spacer(Modifier.height(16.dp))
 
-                        // Encabezado con Ordenamiento por precio
+                        // Encabezado con Ordenamiento por precio y contador
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Productos destacados",
+                                text = if (queryBusqueda.isNotBlank()) "Resultados (${productosOrdenados.size})" else "Productos destacados",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -280,29 +290,60 @@ fun InicioScreen(
 
                         Spacer(Modifier.height(10.dp))
 
-                        // Grid de productos
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(bottom = 16.dp),
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(productosOrdenados, key = { it.id }) { producto ->
-                                ProductoCard(
-                                    producto = producto,
-                                    onClick = { onProductoClick(producto) },
-                                    onAgregar = { onAgregarProducto(producto) },
-                                    esFavorito = favoritos.contains(producto.id),
-                                    onToggleFavorito = { onToggleFavorito(producto.id) }
-                                )
+                        // Si no hay coincidencias con la búsqueda
+                        if (productosOrdenados.isEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(24.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Icon(
+                                        imageVector = Icons.Default.SearchOff,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.outline,
+                                        modifier = Modifier.size(64.dp)
+                                    )
+                                    Spacer(Modifier.height(12.dp))
+                                    Text(
+                                        text = "No se encontraron productos",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Spacer(Modifier.height(6.dp))
+                                    Text(
+                                        text = "Intenta buscar con otro término o selecciona otra categoría.",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        } else {
+                            // Grid de productos filtrados
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                contentPadding = PaddingValues(bottom = 16.dp),
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                items(productosOrdenados, key = { it.id }) { producto ->
+                                    ProductoCard(
+                                        producto = producto,
+                                        onClick = { onProductoClick(producto) },
+                                        onAgregar = { onAgregarProducto(producto) },
+                                        esFavorito = favoritos.contains(producto.id),
+                                        onToggleFavorito = { onToggleFavorito(producto.id) }
+                                    )
+                                }
                             }
                         }
                     }
                 }
 
                 DestinoNav.CATEGORIAS -> {
-                    // Sección de Favoritos y Lista de Categorías
                     val productosFavoritos = productos.filter { favoritos.contains(it.id) }
                     Column(
                         modifier = Modifier
@@ -352,7 +393,6 @@ fun InicioScreen(
                 }
 
                 DestinoNav.PEDIDOS -> {
-                    // Pantalla "Mis pedidos"
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -432,7 +472,6 @@ fun InicioScreen(
                 }
 
                 DestinoNav.PERFIL -> {
-                    // Pantalla Perfil con Switch de Modo Oscuro
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
