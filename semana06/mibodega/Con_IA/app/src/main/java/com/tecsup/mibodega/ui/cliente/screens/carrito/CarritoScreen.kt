@@ -1,5 +1,6 @@
 package com.tecsup.mibodega.ui.cliente.screens.carrito
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -253,12 +256,23 @@ private fun FilaCarrito(
                 .background(GrisClaro, RoundedCornerShape(10.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.ShoppingBasket,
-                contentDescription = null,
-                tint = VerdeBodega,
-                modifier = Modifier.size(28.dp)
-            )
+            if (item.producto.imagenRes != 0) {
+                Image(
+                    painter = painterResource(id = item.producto.imagenRes),
+                    contentDescription = item.producto.nombre,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.ShoppingBasket,
+                    contentDescription = null,
+                    tint = VerdeBodega,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
 
         Spacer(Modifier.width(12.dp))

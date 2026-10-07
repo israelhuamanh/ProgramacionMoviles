@@ -1,5 +1,6 @@
 package com.tecsup.mibodega.ui.cliente.screens.detalle
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,12 +75,23 @@ fun DetalleProductoScreen(
                 .background(GrisClaro, RoundedCornerShape(16.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.ShoppingBasket,
-                contentDescription = producto.nombre,
-                tint = VerdeBodega,
-                modifier = Modifier.size(96.dp)
-            )
+            if (producto.imagenRes != 0) {
+                Image(
+                    painter = painterResource(id = producto.imagenRes),
+                    contentDescription = producto.nombre,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.ShoppingBasket,
+                    contentDescription = producto.nombre,
+                    tint = VerdeBodega,
+                    modifier = Modifier.size(96.dp)
+                )
+            }
         }
 
         Column(
