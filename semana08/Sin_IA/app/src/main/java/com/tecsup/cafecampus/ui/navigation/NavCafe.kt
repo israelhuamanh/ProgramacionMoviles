@@ -3,9 +3,12 @@ package com.tecsup.cafecampus.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.cliente.DetalleProductoScreen
 import com.tecsup.cafecampus.ui.cliente.LoginScreen
 import com.tecsup.cafecampus.ui.cliente.MenuScreen
 import com.tecsup.cafecampus.ui.cliente.SplashScreen
@@ -59,6 +62,19 @@ fun NavCafe(
                 onProducto = { id ->
                     navController.navigate(Rutas.DetalleProducto.crearRuta(id))
                 }
+            )
+        }
+
+        composable(
+            route = Rutas.DetalleProducto.ruta,
+            arguments = listOf(navArgument("productoId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
+            val menuVm: MenuViewModel = viewModel(factory = factory)
+            DetalleProductoScreen(
+                productoId = productoId,
+                menuVm = menuVm,
+                onVolver = { navController.popBackStack() }
             )
         }
     }
