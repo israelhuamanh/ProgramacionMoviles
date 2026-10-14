@@ -1,6 +1,8 @@
 package com.tecsup.cafecampus.data.repository
 
 import com.tecsup.cafecampus.data.local.CafeDatabase
+import com.tecsup.cafecampus.data.local.entity.DetallePedido
+import com.tecsup.cafecampus.data.local.entity.Pedido
 import com.tecsup.cafecampus.data.local.entity.Producto
 import com.tecsup.cafecampus.data.local.entity.Usuario
 import com.tecsup.cafecampus.data.local.relation.PedidoConDetalle
@@ -11,8 +13,7 @@ import kotlinx.coroutines.flow.Flow
 class CafeRepositoryRoom(private val db: CafeDatabase) : CafeRepository {
 
     override suspend fun login(correo: String, clave: String): Usuario? {
-        // TODO: Paso 4 - Implementar login con db.usuarioDao()
-        TODO("Not yet implemented")
+        return db.usuarioDao().login(correo, clave)
     }
 
     override fun observarProductos(): Flow<List<Producto>> {
@@ -42,37 +43,48 @@ class CafeRepositoryRoom(private val db: CafeDatabase) : CafeRepository {
         pago: String,
         nota: String
     ): Long {
-        // TODO: Paso 4 - Convertir items a DetallePedido, calcular total y llamar a db.pedidoDao().crearPedido
-        TODO("Not yet implemented")
+        val total = items.sumOf { it.producto.precio * it.cantidad }
+        val pedido = Pedido(
+            clienteId = clienteId,
+            estado = EstadoPedido.RECIBIDO.name,
+            horaRecojo = horaRecojo,
+            pago = pago,
+            nota = nota,
+            total = total
+        )
+        val detalles = items.map { item ->
+            DetallePedido(
+                pedidoId = 0,
+                productoId = item.producto.id,
+                nombreProducto = item.producto.nombre,
+                cantidad = item.cantidad,
+                precioUnitario = item.producto.precio
+            )
+        }
+        return db.pedidoDao().crearPedido(pedido, detalles)
     }
 
     override fun observarPedidosCliente(clienteId: Int): Flow<List<PedidoConDetalle>> {
-        // TODO: Paso 4 - db.pedidoDao().observarPorCliente(clienteId)
-        TODO("Not yet implemented")
+        return db.pedidoDao().observarPorCliente(clienteId)
     }
 
     override fun observarPedidosPorEstado(estado: EstadoPedido): Flow<List<PedidoConDetalle>> {
-        // TODO: Paso 4 - db.pedidoDao().observarPorEstado(estado.name)
-        TODO("Not yet implemented")
+        return db.pedidoDao().observarPorEstado(estado.name)
     }
 
     override fun observarPedido(id: Int): Flow<PedidoConDetalle?> {
-        // TODO: Paso 4 - db.pedidoDao().observarUno(id)
-        TODO("Not yet implemented")
+        return db.pedidoDao().observarUno(id)
     }
 
     override suspend fun cambiarEstado(pedidoId: Int, estado: EstadoPedido) {
-        // TODO: Paso 4 - db.pedidoDao().cambiarEstado(pedidoId, estado.name)
-        TODO("Not yet implemented")
+        db.pedidoDao().cambiarEstado(pedidoId, estado.name)
     }
 
     override fun observarVentasHoy(inicioDia: Long): Flow<Double> {
-        // TODO: Paso 4 - db.pedidoDao().ventasDesde(inicioDia)
-        TODO("Not yet implemented")
+        return db.pedidoDao().ventasDesde(inicioDia)
     }
 
     override fun observarCantidadPorEstado(estado: EstadoPedido): Flow<Int> {
-        // TODO: Paso 4 - db.pedidoDao().contarPorEstado(estado.name)
-        TODO("Not yet implemented")
+        return db.pedidoDao().contarPorEstado(estado.name)
     }
 }
