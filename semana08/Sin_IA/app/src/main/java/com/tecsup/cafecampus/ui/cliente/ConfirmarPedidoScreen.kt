@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -31,12 +32,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tecsup.cafecampus.ui.components.CafeButton
 import com.tecsup.cafecampus.ui.components.CafeTextField
 import com.tecsup.cafecampus.viewmodel.MenuViewModel
 import com.tecsup.cafecampus.viewmodel.PedidosClienteViewModel
+import com.tecsup.cafecampus.viewmodel.SesionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,11 +47,13 @@ fun ConfirmarPedidoScreen(
     clienteId: Int,
     menuVm: MenuViewModel,
     pedidosVm: PedidosClienteViewModel,
+    sesionVm: SesionViewModel,
     onPedidoConfirmado: (Int) -> Unit,
     onVolver: () -> Unit
 ) {
     val items by menuVm.carrito.collectAsState()
     val total = menuVm.calcularTotal()
+    val recibirPedidos by sesionVm.recibirPedidos.collectAsState()
 
     var horaRecojo by remember { mutableStateOf("10:30 AM") }
     var pago by remember { mutableStateOf("YAPE") }
@@ -80,6 +85,27 @@ fun ConfirmarPedidoScreen(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                if (!recibirPedidos) {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFEE2E2))
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Text(
+                                    text = "Cafetería Cerrada",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF991B1B)
+                                )
+                                Text(
+                                    text = "En este momento no se están recibiendo nuevos pedidos.",
+                                    color = Color(0xFF7F1D1D)
+                                )
+                            }
+                        }
+                    }
+                }
+
                 item {
                     Text(
                         text = "Resumen del pedido",
@@ -198,7 +224,7 @@ fun ConfirmarPedidoScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CafeButton(
-                    texto = "Confirmar pedido",
+                    texto = if (recibirPedidos) "Confirmar pedido" else "Cafetería Cerrada",
                     onClick = {
                         pedidosVm.confirmarPedido(
                             clienteId = clienteId,
@@ -212,7 +238,7 @@ fun ConfirmarPedidoScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = items.isNotEmpty()
+                    enabled = items.isNotEmpty() && recibirPedidos
                 )
 
                 OutlinedButton(

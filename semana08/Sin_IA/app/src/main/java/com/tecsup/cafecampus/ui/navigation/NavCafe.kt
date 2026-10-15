@@ -10,6 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.admin.AjustesScreen
+import com.tecsup.cafecampus.ui.admin.DetallePedidoAdminScreen
+import com.tecsup.cafecampus.ui.admin.FormularioProductoScreen
+import com.tecsup.cafecampus.ui.admin.MenuAdminScreen
 import com.tecsup.cafecampus.ui.admin.PanelScreen
 import com.tecsup.cafecampus.ui.admin.PedidosAdminScreen
 import com.tecsup.cafecampus.ui.cliente.ConfirmarPedidoScreen
@@ -20,6 +24,7 @@ import com.tecsup.cafecampus.ui.cliente.MisPedidosScreen
 import com.tecsup.cafecampus.ui.cliente.SeguimientoScreen
 import com.tecsup.cafecampus.ui.cliente.SplashScreen
 import com.tecsup.cafecampus.viewmodel.CafeViewModelFactory
+import com.tecsup.cafecampus.viewmodel.MenuAdminViewModel
 import com.tecsup.cafecampus.viewmodel.MenuViewModel
 import com.tecsup.cafecampus.viewmodel.PanelAdminViewModel
 import com.tecsup.cafecampus.viewmodel.PedidosAdminViewModel
@@ -98,6 +103,7 @@ fun NavCafe(
                 clienteId = clienteId,
                 menuVm = menuVm,
                 pedidosVm = pedidosVm,
+                sesionVm = sesionVm,
                 onPedidoConfirmado = { pedidoId ->
                     navController.navigate(Rutas.Seguimiento.crearRuta(pedidoId)) {
                         popUpTo(Rutas.Menu.ruta) { inclusive = false }
@@ -157,6 +163,66 @@ fun NavCafe(
                     navController.navigate(Rutas.DetallePedidoAdmin.crearRuta(id))
                 },
                 onVolverAlPanel = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Rutas.DetallePedidoAdmin.ruta,
+            arguments = listOf(navArgument("pedidoId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val pedidoId = backStackEntry.arguments?.getInt("pedidoId") ?: 0
+            val pedidosAdminVm: PedidosAdminViewModel = viewModel(factory = factory)
+            DetallePedidoAdminScreen(
+                pedidoId = pedidoId,
+                pedidosAdminVm = pedidosAdminVm,
+                onVolver = { navController.popBackStack() }
+            )
+        }
+
+        composable(Rutas.MenuAdmin.ruta) {
+            val menuAdminVm: MenuAdminViewModel = viewModel(factory = factory)
+            MenuAdminScreen(
+                menuAdminVm = menuAdminVm,
+                onEditarProducto = { id ->
+                    navController.navigate(Rutas.FormularioProducto.crearRuta(id))
+                },
+                onVolver = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Rutas.FormularioProducto.ruta,
+            arguments = listOf(navArgument("productoId") {
+                type = NavType.IntType
+                defaultValue = -1
+            })
+        ) { backStackEntry ->
+            val rawId = backStackEntry.arguments?.getInt("productoId") ?: -1
+            val productoId = if (rawId == -1) null else rawId
+            val menuAdminVm: MenuAdminViewModel = viewModel(factory = factory)
+
+            FormularioProductoScreen(
+                productoId = productoId,
+                menuAdminVm = menuAdminVm,
+                onVolver = { navController.popBackStack() }
+            )
+        }
+
+        composable(Rutas.Ajustes.ruta) {
+            AjustesScreen(
+                sesionVm = sesionVm,
+                onCambiarPerfil = { nuevoRol ->
+                    val destino = if (nuevoRol == Rol.CLIENTE) Rutas.Menu.ruta else Rutas.PanelAdmin.ruta
+                    navController.navigate(destino) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onCerrarSesion = {
+                    navController.navigate(Rutas.Login.ruta) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onVolver = { navController.popBackStack() }
             )
         }
     }
