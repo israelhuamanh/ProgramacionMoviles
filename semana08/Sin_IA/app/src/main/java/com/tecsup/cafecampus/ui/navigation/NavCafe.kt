@@ -10,6 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.admin.PanelScreen
+import com.tecsup.cafecampus.ui.admin.PedidosAdminScreen
 import com.tecsup.cafecampus.ui.cliente.ConfirmarPedidoScreen
 import com.tecsup.cafecampus.ui.cliente.DetalleProductoScreen
 import com.tecsup.cafecampus.ui.cliente.LoginScreen
@@ -19,6 +21,8 @@ import com.tecsup.cafecampus.ui.cliente.SeguimientoScreen
 import com.tecsup.cafecampus.ui.cliente.SplashScreen
 import com.tecsup.cafecampus.viewmodel.CafeViewModelFactory
 import com.tecsup.cafecampus.viewmodel.MenuViewModel
+import com.tecsup.cafecampus.viewmodel.PanelAdminViewModel
+import com.tecsup.cafecampus.viewmodel.PedidosAdminViewModel
 import com.tecsup.cafecampus.viewmodel.PedidosClienteViewModel
 import com.tecsup.cafecampus.viewmodel.SesionViewModel
 
@@ -129,6 +133,30 @@ fun NavCafe(
                 onVerPedido = { pedidoId ->
                     navController.navigate(Rutas.Seguimiento.crearRuta(pedidoId))
                 }
+            )
+        }
+
+        composable(Rutas.PanelAdmin.ruta) {
+            val panelVm: PanelAdminViewModel = viewModel(factory = factory)
+            PanelScreen(
+                panelVm = panelVm,
+                onIrAPedidos = { navController.navigate(Rutas.PedidosAdmin.ruta) },
+                onIrAMenu = { navController.navigate(Rutas.MenuAdmin.ruta) },
+                onIrAAjustes = { navController.navigate(Rutas.Ajustes.ruta) },
+                onVerDetallePedido = { id ->
+                    navController.navigate(Rutas.DetallePedidoAdmin.crearRuta(id))
+                }
+            )
+        }
+
+        composable(Rutas.PedidosAdmin.ruta) {
+            val pedidosAdminVm: PedidosAdminViewModel = viewModel(factory = factory)
+            PedidosAdminScreen(
+                pedidosAdminVm = pedidosAdminVm,
+                onVerDetallePedido = { id ->
+                    navController.navigate(Rutas.DetallePedidoAdmin.crearRuta(id))
+                },
+                onVolverAlPanel = { navController.popBackStack() }
             )
         }
     }
