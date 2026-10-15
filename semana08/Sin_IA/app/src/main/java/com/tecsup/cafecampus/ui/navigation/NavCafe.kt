@@ -1,6 +1,8 @@
 package com.tecsup.cafecampus.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -8,12 +10,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.cliente.ConfirmarPedidoScreen
 import com.tecsup.cafecampus.ui.cliente.DetalleProductoScreen
 import com.tecsup.cafecampus.ui.cliente.LoginScreen
 import com.tecsup.cafecampus.ui.cliente.MenuScreen
+import com.tecsup.cafecampus.ui.cliente.MisPedidosScreen
+import com.tecsup.cafecampus.ui.cliente.SeguimientoScreen
 import com.tecsup.cafecampus.ui.cliente.SplashScreen
 import com.tecsup.cafecampus.viewmodel.CafeViewModelFactory
 import com.tecsup.cafecampus.viewmodel.MenuViewModel
+import com.tecsup.cafecampus.viewmodel.PedidosClienteViewModel
 import com.tecsup.cafecampus.viewmodel.SesionViewModel
 
 @Composable
@@ -22,6 +28,7 @@ fun NavCafe(
     factory: CafeViewModelFactory
 ) {
     val sesionVm: SesionViewModel = viewModel(factory = factory)
+    val usuarioActual by sesionVm.usuarioActual.collectAsState()
 
     NavHost(
         navController = navController,
@@ -75,6 +82,53 @@ fun NavCafe(
                 productoId = productoId,
                 menuVm = menuVm,
                 onVolver = { navController.popBackStack() }
+            )
+        }
+
+        composable(Rutas.ConfirmarPedido.ruta) {
+            val menuVm: MenuViewModel = viewModel(factory = factory)
+            val pedidosVm: PedidosClienteViewModel = viewModel(factory = factory)
+            val clienteId = usuarioActual?.id ?: 1
+
+            ConfirmarPedidoScreen(
+                clienteId = clienteId,
+                menuVm = menuVm,
+                pedidosVm = pedidosVm,
+                onPedidoConfirmado = { pedidoId ->
+                    navController.navigate(Rutas.Seguimiento.crearRuta(pedidoId)) {
+                        popUpTo(Rutas.Menu.ruta) { inclusive = false }
+                    }
+                },
+                onVolver = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Rutas.Seguimiento.ruta,
+            arguments = listOf(navArgument("pedidoId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val pedidoId = backStackEntry.arguments?.getInt("pedidoId") ?: 0
+            val pedidosVm: PedidosClienteViewModel = viewModel(factory = factory)
+            SeguimientoScreen(
+                pedidoId = pedidoId,
+                pedidosVm = pedidosVm,
+                onVolverAlMenu = {
+                    navController.navigate(Rutas.Menu.ruta) {
+                        popUpTo(Rutas.Menu.ruta) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Rutas.MisPedidos.ruta) {
+            val pedidosVm: PedidosClienteViewModel = viewModel(factory = factory)
+            val clienteId = usuarioActual?.id ?: 1
+            MisPedidosScreen(
+                clienteId = clienteId,
+                pedidosVm = pedidosVm,
+                onVerPedido = { pedidoId ->
+                    navController.navigate(Rutas.Seguimiento.crearRuta(pedidoId))
+                }
             )
         }
     }
