@@ -1,5 +1,6 @@
 package com.tecsup.cafecampus.ui.admin
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,13 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -31,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tecsup.cafecampus.model.EstadoPedido
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.components.AdminBottomBar
 import com.tecsup.cafecampus.ui.components.CafeButton
 import com.tecsup.cafecampus.ui.components.EstadoChip
 import com.tecsup.cafecampus.ui.theme.CafeTheme
@@ -41,7 +40,7 @@ import com.tecsup.cafecampus.viewmodel.PedidosAdminViewModel
 fun PedidosAdminScreen(
     pedidosAdminVm: PedidosAdminViewModel,
     onVerDetallePedido: (Int) -> Unit,
-    onVolverAlPanel: () -> Unit
+    onNavigate: (String) -> Unit
 ) {
     val estadoSeleccionado by pedidosAdminVm.estadoSeleccionado.collectAsState()
     val pedidos by pedidosAdminVm.pedidos.collectAsState()
@@ -52,13 +51,11 @@ fun PedidosAdminScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Gestión de Pedidos") },
-                    navigationIcon = {
-                        IconButton(onClick = onVolverAlPanel) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
-                        }
-                    }
+                    title = { Text("Gestión de Pedidos") }
                 )
+            },
+            bottomBar = {
+                AdminBottomBar(rutaActual = "pedidos_admin", onNavigate = onNavigate)
             }
         ) { padding ->
             Column(
@@ -69,7 +66,9 @@ fun PedidosAdminScreen(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
                 ) {
                     estados.forEach { e ->
                         FilterChip(

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -39,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tecsup.cafecampus.data.local.entity.Producto
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.components.AdminBottomBar
 import com.tecsup.cafecampus.ui.components.ProductoIcono
 import com.tecsup.cafecampus.ui.theme.CafeTheme
 import com.tecsup.cafecampus.viewmodel.MenuAdminViewModel
@@ -48,7 +48,7 @@ import com.tecsup.cafecampus.viewmodel.MenuAdminViewModel
 fun MenuAdminScreen(
     menuAdminVm: MenuAdminViewModel,
     onEditarProducto: (Int?) -> Unit,
-    onVolver: () -> Unit
+    onNavigate: (String) -> Unit
 ) {
     val productos by menuAdminVm.productos.collectAsState()
     var productoAEliminar by remember { mutableStateOf<Producto?>(null) }
@@ -57,13 +57,11 @@ fun MenuAdminScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Gestión del Menú") },
-                    navigationIcon = {
-                        IconButton(onClick = onVolver) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
-                        }
-                    }
+                    title = { Text("Gestión del Menú") }
                 )
+            },
+            bottomBar = {
+                AdminBottomBar(rutaActual = "menu_admin", onNavigate = onNavigate)
             },
             floatingActionButton = {
                 FloatingActionButton(onClick = { onEditarProducto(null) }) {

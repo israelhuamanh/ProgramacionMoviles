@@ -8,13 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -29,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.components.AdminBottomBar
 import com.tecsup.cafecampus.ui.components.CafeButton
+import com.tecsup.cafecampus.ui.components.ClienteBottomBar
 import com.tecsup.cafecampus.ui.theme.CafeTheme
 import com.tecsup.cafecampus.viewmodel.SesionViewModel
 
@@ -39,7 +37,7 @@ fun AjustesScreen(
     sesionVm: SesionViewModel,
     onCambiarPerfil: (Rol) -> Unit,
     onCerrarSesion: () -> Unit,
-    onVolver: () -> Unit
+    onNavigate: (String) -> Unit
 ) {
     val modoOscuro by sesionVm.modoOscuro.collectAsState()
     val recibirPedidos by sesionVm.recibirPedidos.collectAsState()
@@ -51,13 +49,15 @@ fun AjustesScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Ajustes del Sistema") },
-                    navigationIcon = {
-                        IconButton(onClick = onVolver) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
-                        }
-                    }
+                    title = { Text("Ajustes del Sistema") }
                 )
+            },
+            bottomBar = {
+                if (rolActual == Rol.ADMIN) {
+                    AdminBottomBar(rutaActual = "ajustes", onNavigate = onNavigate)
+                } else {
+                    ClienteBottomBar(rutaActual = "ajustes", onNavigate = onNavigate)
+                }
             }
         ) { padding ->
             Column(

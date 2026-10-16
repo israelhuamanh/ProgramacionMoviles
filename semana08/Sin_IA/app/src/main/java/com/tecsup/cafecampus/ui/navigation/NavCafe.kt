@@ -77,6 +77,14 @@ fun NavCafe(
                 vm = vm,
                 onProducto = { id ->
                     navController.navigate(Rutas.DetalleProducto.crearRuta(id))
+                },
+                onIrAlCarrito = {
+                    navController.navigate(Rutas.ConfirmarPedido.ruta)
+                },
+                onNavigate = { ruta ->
+                    navController.navigate(ruta) {
+                        popUpTo(Rutas.Menu.ruta) { inclusive = true }
+                    }
                 }
             )
         }
@@ -138,6 +146,11 @@ fun NavCafe(
                 pedidosVm = pedidosVm,
                 onVerPedido = { pedidoId ->
                     navController.navigate(Rutas.Seguimiento.crearRuta(pedidoId))
+                },
+                onNavigate = { ruta ->
+                    navController.navigate(ruta) {
+                        popUpTo(Rutas.Menu.ruta) { inclusive = true }
+                    }
                 }
             )
         }
@@ -146,9 +159,11 @@ fun NavCafe(
             val panelVm: PanelAdminViewModel = viewModel(factory = factory)
             PanelScreen(
                 panelVm = panelVm,
-                onIrAPedidos = { navController.navigate(Rutas.PedidosAdmin.ruta) },
-                onIrAMenu = { navController.navigate(Rutas.MenuAdmin.ruta) },
-                onIrAAjustes = { navController.navigate(Rutas.Ajustes.ruta) },
+                onNavigate = { ruta ->
+                    navController.navigate(ruta) {
+                        popUpTo(Rutas.PanelAdmin.ruta) { inclusive = true }
+                    }
+                },
                 onVerDetallePedido = { id ->
                     navController.navigate(Rutas.DetallePedidoAdmin.crearRuta(id))
                 }
@@ -162,7 +177,11 @@ fun NavCafe(
                 onVerDetallePedido = { id ->
                     navController.navigate(Rutas.DetallePedidoAdmin.crearRuta(id))
                 },
-                onVolverAlPanel = { navController.popBackStack() }
+                onNavigate = { ruta ->
+                    navController.navigate(ruta) {
+                        popUpTo(Rutas.PanelAdmin.ruta) { inclusive = true }
+                    }
+                }
             )
         }
 
@@ -186,7 +205,11 @@ fun NavCafe(
                 onEditarProducto = { id ->
                     navController.navigate(Rutas.FormularioProducto.crearRuta(id))
                 },
-                onVolver = { navController.popBackStack() }
+                onNavigate = { ruta ->
+                    navController.navigate(ruta) {
+                        popUpTo(Rutas.PanelAdmin.ruta) { inclusive = true }
+                    }
+                }
             )
         }
 
@@ -222,7 +245,11 @@ fun NavCafe(
                         popUpTo(0) { inclusive = true }
                     }
                 },
-                onVolver = { navController.popBackStack() }
+                onNavigate = { ruta ->
+                    navController.navigate(ruta) {
+                        popUpTo(0) { inclusive = false }
+                    }
+                }
             )
         }
     }

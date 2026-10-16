@@ -29,7 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tecsup.cafecampus.model.EstadoPedido
+import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.components.ClienteBottomBar
 import com.tecsup.cafecampus.ui.components.EstadoChip
+import com.tecsup.cafecampus.ui.theme.CafeTheme
 import com.tecsup.cafecampus.viewmodel.PedidosClienteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +40,8 @@ import com.tecsup.cafecampus.viewmodel.PedidosClienteViewModel
 fun MisPedidosScreen(
     clienteId: Int,
     pedidosVm: PedidosClienteViewModel,
-    onVerPedido: (Int) -> Unit
+    onVerPedido: (Int) -> Unit,
+    onNavigate: (String) -> Unit
 ) {
     val pedidos by pedidosVm.observarMisPedidos(clienteId).collectAsState(initial = emptyList())
     var tabActivos by remember { mutableStateOf(true) }
@@ -51,75 +55,80 @@ fun MisPedidosScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Mis Pedidos") }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                FilterChip(
-                    selected = tabActivos,
-                    onClick = { tabActivos = true },
-                    label = { Text("Activos") }
+    CafeTheme(rol = Rol.CLIENTE) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Mis Pedidos") }
                 )
-                FilterChip(
-                    selected = !tabActivos,
-                    onClick = { tabActivos = false },
-                    label = { Text("Historial") }
-                )
+            },
+            bottomBar = {
+                ClienteBottomBar(rutaActual = "mis_pedidos", onNavigate = onNavigate)
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (pedidosFiltrados.isEmpty()) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("No hay pedidos en esta sección")
+                    FilterChip(
+                        selected = tabActivos,
+                        onClick = { tabActivos = true },
+                        label = { Text("Activos") }
+                    )
+                    FilterChip(
+                        selected = !tabActivos,
+                        onClick = { tabActivos = false },
+                        label = { Text("Historial") }
+                    )
                 }
-            } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(pedidosFiltrados) { item ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onVerPedido(item.pedido.id) }
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (pedidosFiltrados.isEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("No hay pedidos en esta sección")
+                    }
+                } else {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(pedidosFiltrados) { item ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onVerPedido(item.pedido.id) }
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "Pedido #${item.pedido.id}",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        EstadoChip(estado = item.pedido.estado)
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text("Hora recojo: ${item.pedido.horaRecojo}")
                                     Text(
-                                        text = "Pedido #${item.pedido.id}",
+                                        text = "Total: S/ %.2f".format(item.pedido.total),
                                         style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.primary,
                                         fontWeight = FontWeight.Bold
                                     )
-                                    EstadoChip(estado = item.pedido.estado)
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Hora recojo: ${item.pedido.horaRecojo}")
-                                Text(
-                                    text = "Total: S/ %.2f".format(item.pedido.total),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.Bold
-                                )
                             }
                         }
                     }

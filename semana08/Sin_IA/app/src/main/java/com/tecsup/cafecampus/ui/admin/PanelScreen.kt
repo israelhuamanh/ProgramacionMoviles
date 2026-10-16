@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tecsup.cafecampus.model.Rol
+import com.tecsup.cafecampus.ui.components.AdminBottomBar
 import com.tecsup.cafecampus.ui.components.CafeButton
 import com.tecsup.cafecampus.ui.components.EstadoChip
 import com.tecsup.cafecampus.ui.theme.CafeTheme
@@ -33,9 +34,7 @@ import com.tecsup.cafecampus.viewmodel.PanelAdminViewModel
 @Composable
 fun PanelScreen(
     panelVm: PanelAdminViewModel,
-    onIrAPedidos: () -> Unit,
-    onIrAMenu: () -> Unit,
-    onIrAAjustes: () -> Unit,
+    onNavigate: (String) -> Unit,
     onVerDetallePedido: (Int) -> Unit
 ) {
     val nuevos by panelVm.nuevosCount.collectAsState()
@@ -50,17 +49,19 @@ fun PanelScreen(
                 TopAppBar(
                     title = { Text("Panel de Control - Cafetería") }
                 )
+            },
+            bottomBar = {
+                AdminBottomBar(rutaActual = "panel_admin", onNavigate = onNavigate)
             }
         ) { padding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .padding(16.dp)
             ) {
                 LazyColumn(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
@@ -143,15 +144,6 @@ fun PanelScreen(
                             }
                         }
                     }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    CafeButton("Pedidos", onClick = onIrAPedidos, modifier = Modifier.weight(1f))
-                    CafeButton("Menú", onClick = onIrAMenu, modifier = Modifier.weight(1f))
-                    CafeButton("Ajustes", onClick = onIrAAjustes, modifier = Modifier.weight(1f))
                 }
             }
         }
