@@ -91,7 +91,7 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\USER\.gradle\cache
 	android:supportsRtl
 		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:10:9-35
 	android:label
-		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:8:9-35
+		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:8:9-41
 	android:roundIcon
 		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:9:9-63
 	android:icon
@@ -99,7 +99,7 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\USER\.gradle\cache
 	android:allowBackup
 		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:6:9-35
 	android:theme
-		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:11:9-72
+		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:11:9-48
 	android:name
 		ADDED from C:\Users\USER\Desktop\laboratorio08\app\src\main\AndroidManifest.xml:5:9-32
 activity#com.tecsup.cafecampus.MainActivity
