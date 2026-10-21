@@ -1,8 +1,10 @@
 package com.tecsup.cafecampus.ui.navigation
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -36,7 +38,15 @@ fun NavCafe(
     navController: NavHostController,
     factory: CafeViewModelFactory
 ) {
-    val sesionVm: SesionViewModel = viewModel(factory = factory)
+    val activity = LocalContext.current as ComponentActivity
+
+    val sesionVm: SesionViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
+    val menuVm: MenuViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
+    val pedidosVm: PedidosClienteViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
+    val panelVm: PanelAdminViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
+    val pedidosAdminVm: PedidosAdminViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
+    val menuAdminVm: MenuAdminViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
+
     val usuarioActual by sesionVm.usuarioActual.collectAsState()
 
     NavHost(
@@ -72,9 +82,8 @@ fun NavCafe(
         }
 
         composable(Rutas.Menu.ruta) {
-            val vm: MenuViewModel = viewModel(factory = factory)
             MenuScreen(
-                vm = vm,
+                vm = menuVm,
                 onProducto = { id ->
                     navController.navigate(Rutas.DetalleProducto.crearRuta(id))
                 },
@@ -94,7 +103,6 @@ fun NavCafe(
             arguments = listOf(navArgument("productoId") { type = NavType.IntType })
         ) { backStackEntry ->
             val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
-            val menuVm: MenuViewModel = viewModel(factory = factory)
             DetalleProductoScreen(
                 productoId = productoId,
                 menuVm = menuVm,
@@ -103,8 +111,6 @@ fun NavCafe(
         }
 
         composable(Rutas.ConfirmarPedido.ruta) {
-            val menuVm: MenuViewModel = viewModel(factory = factory)
-            val pedidosVm: PedidosClienteViewModel = viewModel(factory = factory)
             val clienteId = usuarioActual?.id ?: 1
 
             ConfirmarPedidoScreen(
@@ -126,7 +132,6 @@ fun NavCafe(
             arguments = listOf(navArgument("pedidoId") { type = NavType.IntType })
         ) { backStackEntry ->
             val pedidoId = backStackEntry.arguments?.getInt("pedidoId") ?: 0
-            val pedidosVm: PedidosClienteViewModel = viewModel(factory = factory)
             SeguimientoScreen(
                 pedidoId = pedidoId,
                 pedidosVm = pedidosVm,
@@ -134,12 +139,16 @@ fun NavCafe(
                     navController.navigate(Rutas.Menu.ruta) {
                         popUpTo(Rutas.Menu.ruta) { inclusive = true }
                     }
+                },
+                onNavigate = { ruta ->
+                    navController.navigate(ruta) {
+                        popUpTo(Rutas.Menu.ruta) { inclusive = true }
+                    }
                 }
             )
         }
 
         composable(Rutas.MisPedidos.ruta) {
-            val pedidosVm: PedidosClienteViewModel = viewModel(factory = factory)
             val clienteId = usuarioActual?.id ?: 1
             MisPedidosScreen(
                 clienteId = clienteId,
@@ -156,7 +165,6 @@ fun NavCafe(
         }
 
         composable(Rutas.PanelAdmin.ruta) {
-            val panelVm: PanelAdminViewModel = viewModel(factory = factory)
             PanelScreen(
                 panelVm = panelVm,
                 onNavigate = { ruta ->
@@ -171,7 +179,6 @@ fun NavCafe(
         }
 
         composable(Rutas.PedidosAdmin.ruta) {
-            val pedidosAdminVm: PedidosAdminViewModel = viewModel(factory = factory)
             PedidosAdminScreen(
                 pedidosAdminVm = pedidosAdminVm,
                 onVerDetallePedido = { id ->
@@ -190,7 +197,6 @@ fun NavCafe(
             arguments = listOf(navArgument("pedidoId") { type = NavType.IntType })
         ) { backStackEntry ->
             val pedidoId = backStackEntry.arguments?.getInt("pedidoId") ?: 0
-            val pedidosAdminVm: PedidosAdminViewModel = viewModel(factory = factory)
             DetallePedidoAdminScreen(
                 pedidoId = pedidoId,
                 pedidosAdminVm = pedidosAdminVm,
@@ -199,7 +205,6 @@ fun NavCafe(
         }
 
         composable(Rutas.MenuAdmin.ruta) {
-            val menuAdminVm: MenuAdminViewModel = viewModel(factory = factory)
             MenuAdminScreen(
                 menuAdminVm = menuAdminVm,
                 onEditarProducto = { id ->
@@ -222,7 +227,6 @@ fun NavCafe(
         ) { backStackEntry ->
             val rawId = backStackEntry.arguments?.getInt("productoId") ?: -1
             val productoId = if (rawId == -1) null else rawId
-            val menuAdminVm: MenuAdminViewModel = viewModel(factory = factory)
 
             FormularioProductoScreen(
                 productoId = productoId,
