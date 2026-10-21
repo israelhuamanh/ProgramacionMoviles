@@ -26,6 +26,9 @@ class CafeViewModelFactory(
         if (modelClass.isAssignableFrom(PedidosAdminViewModel::class.java)) {
             return PedidosAdminViewModel(repository) as T
         }
+        if (modelClass.isAssignableFrom(MenuAdminViewModel::class.java)) {
+            return MenuAdminViewModel(repository) as T
+        }
         throw IllegalArgumentException("ViewModel no reconocido: ${modelClass.name}")
     }
 }
