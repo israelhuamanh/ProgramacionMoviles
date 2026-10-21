@@ -3,7 +3,7 @@ package com.tecsup.cafecampus.ui.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Coffee
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -23,16 +23,16 @@ fun ClienteBottomBar(
             label = { Text("Menú") }
         )
         NavigationBarItem(
-            selected = rutaActual == "mis_pedidos",
+            selected = rutaActual == "mis_pedidos" || rutaActual.startsWith("seguimiento"),
             onClick = { onNavigate("mis_pedidos") },
-            icon = { Icon(Icons.AutoMirrored.Filled.ReceiptLong, contentDescription = "Mis Pedidos") },
-            label = { Text("Mis Pedidos") }
+            icon = { Icon(Icons.AutoMirrored.Filled.ReceiptLong, contentDescription = "Pedidos") },
+            label = { Text("Pedidos") }
         )
         NavigationBarItem(
             selected = rutaActual == "ajustes",
             onClick = { onNavigate("ajustes") },
-            icon = { Icon(Icons.Default.Settings, contentDescription = "Ajustes") },
-            label = { Text("Ajustes") }
+            icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+            label = { Text("Perfil") }
         )
     }
 }
