@@ -36,7 +36,9 @@ abstract class CafeDatabase : RoomDatabase() {
                 context.applicationContext,
                 CafeDatabase::class.java,
                 "cafecampus.db"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
             INSTANCE = instance
             instance
         }

@@ -1,5 +1,7 @@
 package com.tecsup.cafecampus.ui.navigation
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,19 +35,29 @@ import com.tecsup.cafecampus.viewmodel.PedidosAdminViewModel
 import com.tecsup.cafecampus.viewmodel.PedidosClienteViewModel
 import com.tecsup.cafecampus.viewmodel.SesionViewModel
 
+private fun Context.findActivity(): ComponentActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is ComponentActivity) return context
+        context = context.baseContext
+    }
+    return null
+}
+
 @Composable
 fun NavCafe(
     navController: NavHostController,
     factory: CafeViewModelFactory
 ) {
-    val activity = LocalContext.current as ComponentActivity
+    val context = LocalContext.current
+    val owner = context.findActivity() ?: error("Activity no encontrada")
 
-    val sesionVm: SesionViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
-    val menuVm: MenuViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
-    val pedidosVm: PedidosClienteViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
-    val panelVm: PanelAdminViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
-    val pedidosAdminVm: PedidosAdminViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
-    val menuAdminVm: MenuAdminViewModel = viewModel(viewModelStoreOwner = activity, factory = factory)
+    val sesionVm: SesionViewModel = viewModel(viewModelStoreOwner = owner, factory = factory)
+    val menuVm: MenuViewModel = viewModel(viewModelStoreOwner = owner, factory = factory)
+    val pedidosVm: PedidosClienteViewModel = viewModel(viewModelStoreOwner = owner, factory = factory)
+    val panelVm: PanelAdminViewModel = viewModel(viewModelStoreOwner = owner, factory = factory)
+    val pedidosAdminVm: PedidosAdminViewModel = viewModel(viewModelStoreOwner = owner, factory = factory)
+    val menuAdminVm: MenuAdminViewModel = viewModel(viewModelStoreOwner = owner, factory = factory)
 
     val usuarioActual by sesionVm.usuarioActual.collectAsState()
 
