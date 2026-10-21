@@ -21,8 +21,8 @@ fun SplashScreen(
 ) {
     val perfilGuardado by sesionVm.perfilGuardado.collectAsState()
 
-    LaunchedEffect(perfilGuardado) {
-        delay(1200)
+    LaunchedEffect(Unit) {
+        delay(1000)
         onContinuar(perfilGuardado)
     }
 
@@ -31,7 +31,7 @@ fun SplashScreen(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "CafeCampus",
+            text = "CafeCampus ☕",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
