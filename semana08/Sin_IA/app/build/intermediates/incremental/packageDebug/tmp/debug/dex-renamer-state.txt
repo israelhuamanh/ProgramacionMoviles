@@ -1,4 +1,4 @@
-#Fri Oct 16 13:08:52 PET 2026
+#Tue Oct 20 22:36:00 PET 2026
 base.0=C\:\\Users\\USER\\Desktop\\laboratorio08\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\Users\\USER\\Desktop\\laboratorio08\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.10=C\:\\Users\\USER\\Desktop\\laboratorio08\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\7\\classes.dex

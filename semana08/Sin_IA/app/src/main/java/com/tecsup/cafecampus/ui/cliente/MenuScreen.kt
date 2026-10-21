@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -53,6 +54,7 @@ fun MenuScreen(
     val productos by vm.productos.collectAsState()
     val carrito by vm.carrito.collectAsState()
     val totalItemsCarrito = carrito.sumOf { it.cantidad }
+    val totalPrecioCarrito = vm.calcularTotal()
 
     var categoriaSeleccionada by remember { mutableStateOf("Todos") }
     var busqueda by remember { mutableStateOf("") }
@@ -95,7 +97,26 @@ fun MenuScreen(
                 )
             },
             bottomBar = {
-                ClienteBottomBar(rutaActual = "menu", onNavigate = onNavigate)
+                Column {
+                    if (totalItemsCarrito > 0) {
+                        Button(
+                            onClick = onIrAlCarrito,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 6.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("Ver Carrito ($totalItemsCarrito ítems)", fontWeight = FontWeight.Bold)
+                                Text("S/ %.2f".format(totalPrecioCarrito), fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                    ClienteBottomBar(rutaActual = "menu", onNavigate = onNavigate)
+                }
             }
         ) { padding ->
             Column(
@@ -146,9 +167,11 @@ fun MenuScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(productosFiltrados) { p ->
-                            ProductoCard(producto = p) {
-                                onProducto(p.id)
-                            }
+                            ProductoCard(
+                                producto = p,
+                                onClick = { onProducto(p.id) },
+                                onAgregarRapido = { vm.agregarAlCarrito(p, 1) }
+                            )
                         }
                     }
                 }
