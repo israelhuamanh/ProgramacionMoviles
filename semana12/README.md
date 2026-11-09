@@ -130,3 +130,16 @@ app/src/main/java/com/tecsup/publicaciones/
 | **PA-12** | Cerrar sesión y reabrir la app | Ejecuta `auth.signOut()`, limpia el backstack y solicita credenciales en `LoginScreen`. |
 | **PA-13** | Girar la pantalla | Conserva el estado en los `ViewModel` (`StateFlow`) y `rememberSaveable` sin volver a descargar. |
 | **PA-14** | Negar el permiso de notificaciones | La app funciona con normalidad sin cerrarse ni mostrar errores. |
+
+---
+
+## 📸 Capturas de Pantalla de la Aplicación
+
+| 1. Login con Firebase Auth | 2. Catálogo y Buscador | 3. Detalle de Publicación |
+| :---: | :---: | :---: |
+| ![Login](./Imagenes/01_login.png) | ![Lista](./Imagenes/02_lista_catalogo.png) | ![Detalle](./Imagenes/03_detalle_publicacion.png) |
+
+| 4. Favoritos y Modo Sin Conexión | 5. Panel Administrador | 6. Notificación Local |
+| :---: | :---: | :---: |
+| ![Favoritos](./Imagenes/04_favoritos_offline.png) | ![Admin](./Imagenes/05_panel_admin.png) | ![Notificación](./Imagenes/06_notificacion_local.png) |
+
