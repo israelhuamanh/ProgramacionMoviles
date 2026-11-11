@@ -1,7 +1,6 @@
 package com.tecsup.publicaciones.ui.detalle
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -61,14 +59,15 @@ fun DetalleScreen(
     val estado by viewModel.estado.collectAsStateWithLifecycle()
     val isDark = isSystemInDarkTheme()
 
-    val lavenderBg = if (isDark) Color(0xFF231738) else Color(0xFFC594FF)
-    val primaryText = if (isDark) Color(0xFFF6EDFF) else Color(0xFF140726)
-    val darkPurplePill = if (isDark) Color(0xFF4A257A) else Color(0xFF390B63)
-    val lightPillBg = if (isDark) Color(0xFF352452) else Color(0xFFFFFFFF)
-    val centerBadgeBg = if (isDark) Color(0xFF3B235E) else Color(0xFFB376FA)
+    val screenBg = if (isDark) Color(0xFF141821) else Color(0xFFEDF2FA)
+    val primaryText = if (isDark) Color(0xFFF3F6FC) else Color(0xFF162030)
+    val activePillBg = if (isDark) Color(0xFFE2B86B) else Color(0xFF1565C0)
+    val activePillText = if (isDark) Color(0xFF1A1612) else Color.White
+    val inactivePillBg = if (isDark) Color(0xFF232B3A) else Color(0xFFFFFFFF)
+    val contentBoxBg = if (isDark) Color(0xFF1E2533) else Color(0xFFFFFFFF)
 
     Scaffold(
-        containerColor = lavenderBg,
+        containerColor = screenBg,
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
         when (val estadoActual = estado) {
@@ -102,98 +101,55 @@ fun DetalleScreen(
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        IconButton(
+                            onClick = onVolver,
+                            modifier = Modifier.size(36.dp)
                         ) {
-                            IconButton(
-                                onClick = onVolver,
-                                modifier = Modifier.size(36.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Volver",
-                                    tint = primaryText
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Bitácora",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = primaryText
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Volver",
+                                tint = primaryText
                             )
                         }
-
-                        Surface(
-                            color = centerBadgeBg,
-                            shape = RoundedCornerShape(50)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
-                            ) {
-                                Text(
-                                    text = "✦ Post #${item.id}",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = primaryText
-                                )
-                            }
-                        }
-
-                        Surface(
-                            shape = CircleShape,
-                            color = Color(0xFFEADDFF),
-                            modifier = Modifier.size(38.dp)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = "Perfil por defecto",
-                                    tint = Color(0xFF390B63),
-                                    modifier = Modifier.size(22.dp)
-                                )
-                            }
-                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Bitácora",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = primaryText
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(18.dp))
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState()),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         ExpressivePillChip(
                             text = "POST #${item.id}",
                             selected = true,
-                            selectedBg = darkPurplePill,
-                            unselectedBg = lightPillBg,
+                            selectedBg = activePillBg,
+                            selectedText = activePillText,
+                            unselectedBg = inactivePillBg,
                             unselectedText = primaryText
                         )
                         ExpressivePillChip(
                             text = "AUTOR #${item.autorId}",
                             selected = false,
-                            selectedBg = darkPurplePill,
-                            unselectedBg = lightPillBg,
+                            selectedBg = activePillBg,
+                            selectedText = activePillText,
+                            unselectedBg = inactivePillBg,
                             unselectedText = primaryText
                         )
                         ExpressivePillChip(
                             text = if (item.esFavorito) "FAVORITO ★" else "LECTURA",
                             selected = false,
-                            selectedBg = darkPurplePill,
-                            unselectedBg = lightPillBg,
-                            unselectedText = primaryText
-                        )
-                        ExpressivePillChip(
-                            text = "JSON API",
-                            selected = false,
-                            selectedBg = darkPurplePill,
-                            unselectedBg = lightPillBg,
+                            selectedBg = activePillBg,
+                            selectedText = activePillText,
+                            unselectedBg = inactivePillBg,
                             unselectedText = primaryText
                         )
                     }
@@ -211,9 +167,9 @@ fun DetalleScreen(
                         fontFamily = FontFamily.Serif,
                         fontStyle = FontStyle.Italic,
                         fontWeight = FontWeight.Black,
-                        fontSize = 46.sp,
-                        lineHeight = 48.sp,
-                        letterSpacing = (-1.5).sp,
+                        fontSize = 44.sp,
+                        lineHeight = 46.sp,
+                        letterSpacing = (-1.2).sp,
                         color = primaryText,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -235,7 +191,7 @@ fun DetalleScreen(
                         )
 
                         Surface(
-                            color = if (item.esFavorito) Color(0xFFFFDAD6) else Color(0xD9FFFFFF),
+                            color = if (item.esFavorito) Color(0xFFFFDAD6) else Color(0xEBFFFFFF),
                             shape = CircleShape,
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
@@ -246,7 +202,7 @@ fun DetalleScreen(
                                 Icon(
                                     imageVector = if (item.esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                     contentDescription = "Alternar favorito",
-                                    tint = if (item.esFavorito) Color(0xFFD32F2F) else Color(0xFF390B63)
+                                    tint = if (item.esFavorito) Color(0xFFD32F2F) else Color(0xFF1565C0)
                                 )
                             }
                         }
@@ -285,7 +241,7 @@ fun DetalleScreen(
                             modifier = Modifier.weight(1f)
                         )
                         MetadataItem(
-                            label = "Publicado por Autor #${item.autorId}",
+                            label = "Autor #${item.autorId}",
                             value = "Lectura verificada",
                             textColor = primaryText,
                             modifier = Modifier.weight(1f)
@@ -295,8 +251,8 @@ fun DetalleScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Surface(
-                        color = if (isDark) Color(0xFF31214C) else Color(0x55FFFFFF),
-                        shape = RoundedCornerShape(20.dp),
+                        color = contentBoxBg,
+                        shape = RoundedCornerShape(22.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
@@ -312,7 +268,7 @@ fun DetalleScreen(
                             Text(
                                 text = item.contenido,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = primaryText.copy(alpha = 0.88f),
+                                color = primaryText.copy(alpha = 0.85f),
                                 lineHeight = 23.sp
                             )
                         }
@@ -324,8 +280,8 @@ fun DetalleScreen(
                         onClick = { viewModel.alternarFavorito() },
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = darkPurplePill,
-                            contentColor = Color.White
+                            containerColor = activePillBg,
+                            contentColor = activePillText
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -355,6 +311,7 @@ private fun ExpressivePillChip(
     text: String,
     selected: Boolean,
     selectedBg: Color,
+    selectedText: Color,
     unselectedBg: Color,
     unselectedText: Color
 ) {
@@ -366,7 +323,7 @@ private fun ExpressivePillChip(
             text = text,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
-            color = if (selected) Color.White else unselectedText,
+            color = if (selected) selectedText else unselectedText,
             letterSpacing = 0.5.sp,
             modifier = Modifier.padding(horizontal = 18.dp, vertical = 7.dp)
         )
@@ -385,7 +342,7 @@ private fun MetadataItem(
             text = label,
             fontFamily = FontFamily.Monospace,
             fontSize = 12.sp,
-            color = textColor.copy(alpha = 0.72f)
+            color = textColor.copy(alpha = 0.7f)
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(

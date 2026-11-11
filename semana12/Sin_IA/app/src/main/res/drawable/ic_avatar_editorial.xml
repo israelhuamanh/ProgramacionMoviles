@@ -5,32 +5,39 @@
     android:viewportWidth="360"
     android:viewportHeight="240">
 
-    <!-- Fondo lavanda profundo expresivo -->
+    <!-- Fondo azul pizarra acorde a la paleta de la app -->
     <path
-        android:fillColor="#6A35B5"
+        android:fillColor="#1E2B3C"
         android:pathData="M0,0h360v240h-360z" />
 
-    <!-- Círculos decorativos estilo retrato editorial -->
+    <!-- Formas orgánicas expresivas en tonos azulados suaves -->
     <path
-        android:fillColor="#7E48C9"
+        android:fillColor="#26384E"
         android:pathData="M60,40 m-90,0 a90,90 0 1,0 180,0 a90,90 0 1,0 -180,0" />
     <path
-        android:fillColor="#552598"
+        android:fillColor="#172230"
         android:pathData="M310,200 m-110,0 a110,110 0 1,0 220,0 a110,110 0 1,0 -220,0" />
 
-    <!-- Halo central detrás de la foto de perfil por defecto -->
+    <!-- Halo central con acento dorado cálido y azul claro de Bitácora -->
     <path
-        android:fillColor="#9A6CE0"
+        android:fillColor="#2E4460"
         android:pathData="M180,120 m-78,0 a78,78 0 1,0 156,0 a78,78 0 1,0 -156,0" />
     <path
-        android:fillColor="#B791F3"
+        android:fillColor="#D1E4FF"
         android:pathData="M180,120 m-64,0 a64,64 0 1,0 128,0 a64,64 0 1,0 -128,0" />
+
+    <!-- Borde dorado sutil estilo emblema de Bitácora -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M180,56 A64,64 0 1,1 179.99,56"
+        android:strokeWidth="2.5"
+        android:strokeColor="#E2B86B" />
 
     <!-- Silueta de foto de perfil por defecto (cabeza y hombros) -->
     <path
-        android:fillColor="#31105E"
+        android:fillColor="#1565C0"
         android:pathData="M180,96 m-24,0 a24,24 0 1,0 48,0 a24,24 0 1,0 -48,0" />
     <path
-        android:fillColor="#31105E"
+        android:fillColor="#1565C0"
         android:pathData="M132,174 C132,144 152,130 180,130 C208,130 228,144 228,174 Z" />
 </vector>
