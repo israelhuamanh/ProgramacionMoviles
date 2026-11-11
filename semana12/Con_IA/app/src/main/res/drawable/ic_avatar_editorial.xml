@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="240dp"
+    android:viewportWidth="360"
+    android:viewportHeight="240">
+
+    <!-- Fondo lavanda profundo expresivo -->
+    <path
+        android:fillColor="#6A35B5"
+        android:pathData="M0,0h360v240h-360z" />
+
+    <!-- Círculos decorativos estilo retrato editorial -->
+    <path
+        android:fillColor="#7E48C9"
+        android:pathData="M60,40 m-90,0 a90,90 0 1,0 180,0 a90,90 0 1,0 -180,0" />
+    <path
+        android:fillColor="#552598"
+        android:pathData="M310,200 m-110,0 a110,110 0 1,0 220,0 a110,110 0 1,0 -220,0" />
+
+    <!-- Halo central detrás de la foto de perfil por defecto -->
+    <path
+        android:fillColor="#9A6CE0"
+        android:pathData="M180,120 m-78,0 a78,78 0 1,0 156,0 a78,78 0 1,0 -156,0" />
+    <path
+        android:fillColor="#B791F3"
+        android:pathData="M180,120 m-64,0 a64,64 0 1,0 128,0 a64,64 0 1,0 -128,0" />
+
+    <!-- Silueta de foto de perfil por defecto (cabeza y hombros) -->
+    <path
+        android:fillColor="#31105E"
+        android:pathData="M180,96 m-24,0 a24,24 0 1,0 48,0 a24,24 0 1,0 -48,0" />
+    <path
+        android:fillColor="#31105E"
+        android:pathData="M132,174 C132,144 152,130 180,130 C208,130 228,144 228,174 Z" />
+</vector>
