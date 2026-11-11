@@ -73,7 +73,7 @@ fun ListaScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Publicaciones (Posts)",
+                            text = "Bitácora",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )

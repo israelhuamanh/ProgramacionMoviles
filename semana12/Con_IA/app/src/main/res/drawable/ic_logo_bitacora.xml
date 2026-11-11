@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Círculo exterior sutil estilo brújula/sello editorial -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M32,4 A28,28 0 1,1 31.99,4"
+        android:strokeWidth="1.8"
+        android:strokeColor="#E2B86B" />
+
+    <!-- Páginas de cuaderno abierto en la base -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M14,45 C20,42 27,43 32,46 C37,43 44,42 50,45"
+        android:strokeWidth="2.2"
+        android:strokeCap="round"
+        android:strokeColor="#F5EFE6" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M17,50 C22,47.5 27.5,48.5 32,51 C36.5,48.5 42,47.5 47,50"
+        android:strokeWidth="1.6"
+        android:strokeCap="round"
+        android:strokeColor="#E2B86B" />
+
+    <!-- Plumilla estilográfica clásica en el centro -->
+    <path
+        android:fillColor="#E2B86B"
+        android:pathData="M32,12 L41,28 L36,39 L28,39 L23,28 Z" />
+
+    <!-- Hendidura y respiradero central de la plumilla -->
+    <path
+        android:fillColor="#1A1612"
+        android:pathData="M32,12 L32,27"
+        android:strokeWidth="1.8"
+        android:strokeColor="#1A1612" />
+    <path
+        android:fillColor="#1A1612"
+        android:pathData="M32,27 m-2.6,0 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0" />
+</vector>
