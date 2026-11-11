@@ -17,13 +17,13 @@
         android:fillColor="#00000000"
         android:pathData="M14,45 C20,42 27,43 32,46 C37,43 44,42 50,45"
         android:strokeWidth="2.2"
-        android:strokeCap="round"
+        android:strokeLineCap="round"
         android:strokeColor="#F5EFE6" />
     <path
         android:fillColor="#00000000"
         android:pathData="M17,50 C22,47.5 27.5,48.5 32,51 C36.5,48.5 42,47.5 47,50"
         android:strokeWidth="1.6"
-        android:strokeCap="round"
+        android:strokeLineCap="round"
         android:strokeColor="#E2B86B" />
 
     <!-- Plumilla estilográfica clásica en el centro -->
