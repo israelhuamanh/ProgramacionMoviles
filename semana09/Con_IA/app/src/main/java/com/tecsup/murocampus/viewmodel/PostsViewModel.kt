@@ -17,6 +17,19 @@ data class DetalleUi(val post: Post, val comentarios: List<Comentario>)
 class PostsViewModel(private val repo: PostRepository) : ViewModel() {
     private val _lista = MutableStateFlow<UiState<List<Post>>>(UiState.Cargando)
     val lista = _lista.asStateFlow()
+    private val _busqueda = MutableStateFlow("")
+    val busqueda = _busqueda.asStateFlow()
+    val listaVisible = combine(lista, busqueda) { estado, texto ->
+        val consulta = texto.trim()
+        if (estado is UiState.Exito && consulta.isNotEmpty()) {
+            UiState.Exito(estado.datos.filter { it.title.contains(consulta, ignoreCase = true) })
+        } else estado
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, UiState.Cargando)
+
+    fun buscar(texto: String) {
+        _busqueda.value = texto
+    }
+
     private var peticionLista: Job? = null
 
     private val _usuarioFiltro = MutableStateFlow<Int?>(null)

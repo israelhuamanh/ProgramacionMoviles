@@ -18,9 +18,13 @@ import com.tecsup.murocampus.viewmodel.*
 
 @Composable
 fun PantallaLista(vm: PostsViewModel, abrir: (Int) -> Unit = {}) {
-    val estado by vm.lista.collectAsStateWithLifecycle()
+    val estado by vm.listaVisible.collectAsStateWithLifecycle()
     val filtro by vm.usuarioFiltro.collectAsStateWithLifecycle()
+    val busqueda by vm.busqueda.collectAsStateWithLifecycle()
     Column {
+        OutlinedTextField(value = busqueda, onValueChange = vm::buscar, singleLine = true,
+            label = { Text("Buscar por título") },
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp))
         LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(11) { indice ->
                 val usuario = indice.takeIf { it > 0 }
@@ -32,7 +36,7 @@ fun PantallaLista(vm: PostsViewModel, abrir: (Int) -> Unit = {}) {
             UiState.Cargando -> Cargando()
             is UiState.Error -> ErrorConReintento(actual.mensaje, vm::cargar)
             is UiState.Exito -> if (actual.datos.isEmpty()) {
-                Text("Sin publicaciones", Modifier.padding(16.dp))
+                Text(if (busqueda.isBlank()) "Sin publicaciones" else "Sin coincidencias", Modifier.padding(16.dp))
             } else key(filtro) { LazyColumn(contentPadding = PaddingValues(start = 16.dp, end = 16.dp,
                 top = 8.dp, bottom = 88.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(actual.datos, key = { it.id }) { post -> TarjetaPost(post) { abrir(post.id) } }
