@@ -1,5 +1,6 @@
 package com.tecsup.avisoscampus.notificacion
 
+import com.tecsup.avisoscampus.model.Origen
 import android.app.PendingIntent
 import android.content.Intent
 import com.tecsup.avisoscampus.MainActivity
@@ -17,10 +18,12 @@ import android.content.Context
 import android.os.Build
 object Notificador {
     const val CANAL = "avisos"
+    const val URGENTES = "urgentes"
     fun crearCanal(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = context.getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(NotificationChannel(CANAL, "Avisos", NotificationManager.IMPORTANCE_DEFAULT))
+            manager.createNotificationChannel(NotificationChannel(URGENTES, "Urgentes", NotificationManager.IMPORTANCE_HIGH))
         }
     }
 
@@ -33,7 +36,8 @@ object Notificador {
         if (!tienePermiso(context)) return false
         val intent = Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendiente = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-        val notificacion = NotificationCompat.Builder(context, CANAL)
+        val canal = if (aviso.origen == Origen.RECORDATORIO) URGENTES else CANAL
+        val notificacion = NotificationCompat.Builder(context, canal)
             .setSmallIcon(R.drawable.ic_notificacion)
             .setContentTitle(aviso.titulo)
             .setContentText(aviso.texto)
