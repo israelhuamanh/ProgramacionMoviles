@@ -45,6 +45,9 @@ fun PantallaAvisos(vm: AvisosViewModel) {
     LaunchedEffect(contexto) {
         if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
     }
+    LaunchedEffect(vm, contexto) {
+        vm.eventos.collect { aviso -> Notificador.mostrar(contexto, aviso) }
+    }
     Scaffold(topBar = {
         TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
@@ -69,7 +72,9 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                         else vm.permisoRespondido(true)
                     }) { Text("Permitir notificaciones") }
                 }
-                Tarjeta("Avisos") {}
+                Tarjeta("Avisos") {
+                    Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
+                }
                 Tarjeta("Recordatorio") {}
                 Tarjeta("Receptor de anuncios") {}
                 Tarjeta("Historial") {}
