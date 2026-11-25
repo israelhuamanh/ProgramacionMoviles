@@ -50,6 +50,7 @@ class PostsViewModel(private val repo: PostRepository) : ViewModel() {
     }
 
     fun abrir(id: Int) {
+        if (seleccionado != id) _borrado.value = null
         seleccionado = id
         peticionDetalle?.cancel()
         _detalle.value = UiState.Cargando
@@ -79,6 +80,24 @@ class PostsViewModel(private val repo: PostRepository) : ViewModel() {
         viewModelScope.launch {
             val nuevo = NuevoPost(userId = 1, title = titulo.trim(), body = texto.trim())
             _creacion.value = repo.crear(nuevo).aEstado()
+        }
+    }
+
+    private val _borrado = MutableStateFlow<UiState<Unit>?>(null)
+    val borrado = _borrado.asStateFlow()
+
+    fun eliminar(id: Int) {
+        if (seleccionado != id || _borrado.value == UiState.Cargando) return
+        _borrado.value = UiState.Cargando
+        viewModelScope.launch {
+            val resultado = repo.eliminar(id)
+            resultado.onSuccess {
+                _lista.update { estado ->
+                    if (estado is UiState.Exito) UiState.Exito(estado.datos.filter { it.id != id })
+                    else estado
+                }
+            }
+            if (seleccionado == id) _borrado.value = resultado.aEstado()
         }
     }
 }

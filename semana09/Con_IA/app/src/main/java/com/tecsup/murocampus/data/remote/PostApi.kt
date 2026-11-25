@@ -18,4 +18,7 @@ interface PostApi {
 
     @POST("posts")
     suspend fun crear(@Body nuevo: NuevoPost): Post
+
+    @DELETE("posts/{id}")
+    suspend fun eliminar(@Path("id") id: Int): retrofit2.Response<Unit>
 }

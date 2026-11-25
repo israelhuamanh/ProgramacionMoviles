@@ -19,6 +19,19 @@ import com.tecsup.murocampus.viewmodel.*
 @Composable
 fun PantallaDetalle(vm: PostsViewModel, id: Int) {
     val estado by vm.detalle.collectAsStateWithLifecycle()
+    val borrado by vm.borrado.collectAsStateWithLifecycle()
+    var confirmar by rememberSaveable(id) { mutableStateOf(false) }
+    if (confirmar) AlertDialog(
+        onDismissRequest = { confirmar = false },
+        title = { Text("¿Eliminar publicación?") },
+        text = { Text("La publicación se quitará de este muro.") },
+        confirmButton = { TextButton(onClick = { confirmar = false; vm.eliminar(id) }) { Text("Eliminar") } },
+        dismissButton = { TextButton(onClick = { confirmar = false }) { Text("Cancelar") } }
+    )
+    if (borrado is UiState.Exito) {
+        Text("Publicación eliminada", Modifier.padding(20.dp), style = MaterialTheme.typography.titleLarge)
+        return
+    }
     when (val actual = estado) {
         UiState.Cargando -> Cargando("Cargando publicación…")
         is UiState.Error -> ErrorConReintento(actual.mensaje) { vm.abrir(id) }
@@ -32,6 +45,12 @@ fun PantallaDetalle(vm: PostsViewModel, id: Int) {
                                 color = MaterialTheme.colorScheme.primary)
                             Text(post.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Text(post.body)
+                            TextButton(onClick = { confirmar = true }, enabled = borrado != UiState.Cargando) {
+                                Text(if (borrado == UiState.Cargando) "Eliminando…" else "Eliminar publicación",
+                                    color = MaterialTheme.colorScheme.error)
+                            }
+                            val error = borrado as? UiState.Error
+                            if (error != null) ErrorConReintento(error.mensaje) { confirmar = true }
                         }
                     }
                 }

@@ -8,6 +8,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 interface PostRepository {
+    suspend fun eliminar(id: Int): Result<Unit>
     suspend fun listar(): Result<List<Post>>
     suspend fun detalle(id: Int): Result<Post>
     suspend fun comentarios(id: Int): Result<List<Comentario>>
@@ -22,6 +23,12 @@ class PostRepositoryRemote(private val api: PostApi) : PostRepository {
         throw e
     } catch (e: Exception) {
         Result.failure(e)
+    }
+
+    override suspend fun eliminar(id: Int) = llamar {
+        val respuesta = api.eliminar(id)
+        if (!respuesta.isSuccessful) throw HttpException(respuesta)
+        Unit
     }
 
     override suspend fun listar() = llamar { api.listar() }
