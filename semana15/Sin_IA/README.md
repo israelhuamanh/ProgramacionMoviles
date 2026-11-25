@@ -4,7 +4,7 @@ Laboratorio 15 de Programación en Móviles. La aplicación registra avisos fict
 
 ## Ejecutar
 
-1. Abre la carpeta del repositorio en Android Studio y sincroniza Gradle.
+1. Abre la carpeta `semana15/Sin_IA` en Android Studio y sincroniza Gradle.
 2. Selecciona el módulo `app` y un dispositivo con Android 13 o superior para probar el diálogo de permiso. La aplicación admite Android 8 o superior.
 3. Pulsa **Run**, toca **Permitir notificaciones** y después **Mostrar aviso**. Desliza desde el borde superior para ver **Tarea lista**.
 

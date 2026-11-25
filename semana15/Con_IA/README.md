@@ -10,6 +10,8 @@ Laboratorio 15 de Programación en Móviles. La aplicación registra avisos fict
 | Texto expandible | Genera un aviso y despliega su notificación. La vista compacta muestra el texto de la guía y la expandida añade el detalle. |
 | Receptor del cargador | Activa **Escuchar el cargador** y conecta o desconecta la alimentación del dispositivo. En el emulador puedes cambiar el estado de carga en los controles de batería. Cada transición añade una fila con su hora. |
 
+El selector de tema permite cambiar entre claro y oscuro. Desde el selector de widgets de Android puedes añadir la barra de AvisosCampus para abrir la app, generar avisos y simular eventos de modo avión o cargador.
+
 El registro de decisiones y una explicación de la mejora del cargador están en [PROMPTS.md](PROMPTS.md).
 
 ## Material 3 Expressive en uso
@@ -24,7 +26,7 @@ El tema emplea `MaterialExpressiveTheme` de Compose Material 3 1.5.0. Los cambio
 
 ## Ejecutar
 
-1. Abre la carpeta del repositorio en Android Studio y sincroniza Gradle.
+1. Abre la carpeta `semana15/Con_IA` en Android Studio y sincroniza Gradle.
 2. Selecciona el módulo `app` y un dispositivo con Android 13 o superior para probar el diálogo de permiso. La aplicación admite Android 8 o superior.
 3. Pulsa **Run**, toca **Permitir notificaciones** y después **Mostrar aviso**. Desliza desde el borde superior para ver **Tarea lista**.
 
