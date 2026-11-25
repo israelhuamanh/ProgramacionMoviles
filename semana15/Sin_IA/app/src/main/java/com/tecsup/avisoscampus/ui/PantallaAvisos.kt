@@ -1,5 +1,11 @@
 package com.tecsup.avisoscampus.ui
 
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
+import com.tecsup.avisoscampus.receiver.ModoAvionReceiver
 import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,6 +55,15 @@ fun PantallaAvisos(vm: AvisosViewModel) {
         vm.eventos.collect { aviso -> Notificador.mostrar(contexto, aviso) }
     }
     val faltan by vm.faltan.collectAsState()
+    val escuchando by vm.escuchandoAvion.collectAsState()
+    DisposableEffect(contexto, escuchando) {
+        if (escuchando) {
+            val receptor = ModoAvionReceiver(vm::alCambiarModoAvion)
+            ContextCompat.registerReceiver(contexto, receptor, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED),
+                ContextCompat.RECEIVER_NOT_EXPORTED)
+            onDispose { contexto.unregisterReceiver(receptor) }
+        } else onDispose {}
+    }
     Scaffold(topBar = {
         TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
@@ -88,9 +103,20 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                     faltan?.let { Text("Faltan $it s", style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary) }
                 }
-                Tarjeta("Receptor de anuncios") {}
+                Tarjeta("Receptor de anuncios") {
+                    OpcionEscucha("Escuchar el modo avión", escuchando, vm::cambiarEscucha)
+                }
                 Tarjeta("Historial") {}
             }
         }
+    }
+}
+
+@Composable
+private fun OpcionEscucha(texto: String, activo: Boolean, cambiar: (Boolean) -> Unit) {
+    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).toggleable(activo, role = Role.Switch, onValueChange = cambiar),
+        verticalAlignment = Alignment.CenterVertically) {
+        Text(texto, Modifier.weight(1f))
+        Switch(checked = activo, onCheckedChange = null)
     }
 }
