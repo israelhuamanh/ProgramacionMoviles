@@ -27,8 +27,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MuroTheme {
-                Scaffold(topBar = { Cabecera() }) { padding ->
-                    Box(Modifier.padding(padding)) { PantallaLista(vm) }
+                var id by rememberSaveable { mutableStateOf<Int?>(null) }
+                val volver = { vm.cerrarDetalle(); id = null }
+                BackHandler(enabled = id != null) { volver() }
+                Scaffold(topBar = { Cabecera(if (id != null) volver else null) }) { padding ->
+                    Box(Modifier.padding(padding)) {
+                        val seleccionado = id
+                        if (seleccionado == null) PantallaLista(vm) { id = it }
+                        else {
+                            LaunchedEffect(seleccionado) { vm.abrirSiNecesario(seleccionado) }
+                            PantallaDetalle(vm, seleccionado)
+                        }
+                    }
                 }
             }
         }
@@ -37,8 +47,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @androidx.compose.runtime.Composable
-fun Cabecera() {
-    TopAppBar(title = { Text("MuroCampus") }, colors = TopAppBarDefaults.topAppBarColors(
+fun Cabecera(volver: (() -> Unit)? = null) {
+    TopAppBar(navigationIcon = {
+        if (volver != null) TextButton(onClick = volver) { Text("Atrás", color = MaterialTheme.colorScheme.onPrimary) }
+    }, title = { Text("MuroCampus") }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ))
