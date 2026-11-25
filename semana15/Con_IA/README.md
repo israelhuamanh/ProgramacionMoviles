@@ -12,13 +12,23 @@ Laboratorio 15 de Programación en Móviles. La aplicación registra avisos fict
 
 El registro de decisiones y una explicación de la mejora del cargador están en [PROMPTS.md](PROMPTS.md).
 
+## Material 3 Expressive en uso
+
+![Demostración del aviso inmediato y la cuenta regresiva](docs/expresivo/interaccion.gif)
+
+**Mostrar aviso** es la acción principal. Al pulsarla, el botón cambia de forma y el sello del campus muestra una confirmación. El registro aparece en el historial incluso cuando Android deniega el permiso. El error incluye acceso a Ajustes y una indicación para los lectores de pantalla.
+
+Al programar un recordatorio, la tarjeta se expande y muestra los segundos restantes con un indicador ondulado. La escala de animación del sistema gobierna las transiciones. Con las animaciones desactivadas, la cuenta utiliza una barra lineal. [Ver la cuenta regresiva en el emulador](docs/expresivo/recordatorio.png). En ventanas de al menos 840 dp, las acciones y el historial comparten la pantalla en dos columnas. [Ver disposición ancha](docs/expresivo/dos-paneles.png)
+
+El tema emplea `MaterialExpressiveTheme` de Compose Material 3 1.5.0. Los cambios de posición y tamaño usan los resortes espaciales del tema. Los cambios de color y opacidad usan sus resortes de efectos. El sello del campus, el azul de marca y la duración de la confirmación son decisiones de esta aplicación.
+
 ## Ejecutar
 
 1. Abre la carpeta del repositorio en Android Studio y sincroniza Gradle.
 2. Selecciona el módulo `app` y un dispositivo con Android 13 o superior para probar el diálogo de permiso. La aplicación admite Android 8 o superior.
 3. Pulsa **Run**, toca **Permitir notificaciones** y después **Mostrar aviso**. Desliza desde el borde superior para ver **Tarea lista**.
 
-La compilación usa el SDK 36. En Windows, `gradlew.bat assembleDebug` genera el APK de desarrollo. La app funciona localmente, sin cuentas, claves ni conexión a Internet.
+La compilación usa el SDK 37. En Windows, `gradlew.bat assembleDebug` genera el APK de desarrollo. La app funciona localmente, sin cuentas, claves ni conexión a Internet.
 
 ## Estructura
 
@@ -37,6 +47,7 @@ com.tecsup.avisoscampus/
 │   └── AvisosViewModelFactory.kt      Inyecta el repositorio
 └── ui/
     ├── PantallaAvisos.kt              Permisos, acciones y registro del receptor
+    ├── EstadosExpresivos.kt           Permiso, confirmación y cuenta regresiva
     ├── HistorialAvisos.kt             Presenta los 20 avisos más recientes
     └── theme/TemaCampus.kt            Colores para tema claro y oscuro
 ```

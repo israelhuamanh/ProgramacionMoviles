@@ -1,48 +1,50 @@
 package com.tecsup.avisoscampus.ui
 
-import com.tecsup.avisoscampus.receiver.CargadorReceiver
-import android.provider.Settings
+import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.core.content.ContextCompat
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.ui.semantics.Role
-import com.tecsup.avisoscampus.receiver.ModoAvionReceiver
-import android.Manifest
 import android.os.Build
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.graphics.Color
-import com.tecsup.avisoscampus.model.PermisoUi
-import com.tecsup.avisoscampus.notificacion.Notificador
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import com.tecsup.avisoscampus.model.PermisoUi
+import com.tecsup.avisoscampus.notificacion.Notificador
+import com.tecsup.avisoscampus.receiver.*
 import com.tecsup.avisoscampus.viewmodel.AvisosViewModel
 
 @Composable
-internal fun Tarjeta(titulo: String, contenido: @Composable ColumnScope.() -> Unit) {
+internal fun Tarjeta(titulo: String, destacada: Boolean = false, contenido: @Composable ColumnScope.() -> Unit) {
+    val colores = MaterialTheme.colorScheme
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+        shape = if (destacada) MaterialTheme.shapes.extraLarge else MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = if (destacada) colores.primaryContainer else colores.surfaceContainerLow)
     ) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(titulo, color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(titulo, Modifier.semantics { heading() },
+                color = if (destacada) colores.onPrimaryContainer else colores.primary,
+                style = MaterialTheme.typography.titleMediumEmphasized)
             contenido()
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PantallaAvisos(vm: AvisosViewModel) {
     val contexto = LocalContext.current
@@ -82,62 +84,60 @@ fun PantallaAvisos(vm: AvisosViewModel) {
             onDispose { contexto.unregisterReceiver(receptor) }
         } else onDispose {}
     }
-    Scaffold(topBar = {
-        TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary))
+    val barra = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    Scaffold(modifier = Modifier.nestedScroll(barra.nestedScrollConnection), topBar = {
+        MediumFlexibleTopAppBar(
+            title = { Text("AvisosCampus") },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            ), scrollBehavior = barra
+        )
     }) { margen ->
-        Box(Modifier.fillMaxSize().padding(margen), contentAlignment = Alignment.TopCenter) {
-            Column(Modifier.widthIn(max = 640.dp).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Tarjeta("Permiso de notificaciones") {
-                    val (etiqueta, fondo, texto) = when (permiso) {
-                        PermisoUi.Concedido -> Triple("Permitido", Color(0xFFBCEFD3), Color(0xFF064527))
-                        PermisoUi.Denegado -> Triple("Denegado", MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer)
-                        PermisoUi.SinPedir -> Triple("Sin pedir", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Surface(shape = RoundedCornerShape(50), color = fondo, contentColor = texto) {
-                        Text(etiqueta, Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelLarge)
-                    }
-                    FilledTonalButton(onClick = {
-                        if (Build.VERSION.SDK_INT >= 33 && !Notificador.tienePermiso(contexto))
-                            lanzador.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        else vm.permisoRespondido(true)
-                    }) { Text("Permitir notificaciones") }
-                    mensaje?.let {
-                        Surface(color = MaterialTheme.colorScheme.errorContainer, shape = RoundedCornerShape(12.dp)) {
-                            Column(Modifier.padding(12.dp)) {
-                                Text(it, color = MaterialTheme.colorScheme.onErrorContainer)
-                                TextButton(onClick = {
-                                    contexto.startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                                        .putExtra(Settings.EXTRA_APP_PACKAGE, contexto.packageName))
-                                }) { Text("Abrir ajustes") }
-                            }
+        BoxWithConstraints(Modifier.fillMaxSize().padding(margen), contentAlignment = Alignment.TopCenter) {
+            val ancho = maxWidth.coerceAtMost(1200.dp)
+            val doble = ancho >= 840.dp
+            val columna = if (doble) (ancho - 48.dp) / 2 else ancho - 32.dp
+            FlowRow(
+                Modifier.width(ancho).verticalScroll(rememberScrollState()).padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Column(Modifier.width(columna), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Tarjeta("Permiso de notificaciones") {
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            itemVerticalAlignment = Alignment.CenterVertically) {
+                            EtiquetaPermiso(permiso)
+                            FilledTonalButton(shapes = ButtonDefaults.shapes(), onClick = {
+                                if (Build.VERSION.SDK_INT >= 33 && !Notificador.tienePermiso(contexto))
+                                    lanzador.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                else vm.permisoRespondido(true)
+                            }) { Text("Permitir notificaciones") }
+                        }
+                        MensajePermiso(mensaje) {
+                            contexto.startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .putExtra(Settings.EXTRA_APP_PACKAGE, contexto.packageName))
                         }
                     }
-                }
-                Tarjeta("Avisos") {
-                    Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
-                }
-                Tarjeta("Recordatorio") {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        FilledTonalButton(onClick = { vm.recordarEn() }, enabled = faltan == null) {
-                            Text("Recordar en 10 s")
-                        }
-                        OutlinedButton(onClick = vm::cancelarRecordatorio, enabled = faltan != null) {
-                            Text("Cancelar")
-                        }
+                    Tarjeta("Avisos", destacada = true) {
+                        AccionAviso(vm::avisarAhora)
                     }
-                    faltan?.let { Text("Faltan $it s", style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary) }
+                    Tarjeta("Recordatorio") {
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            FilledTonalButton(onClick = { vm.recordarEn() }, shapes = ButtonDefaults.shapes(),
+                                enabled = faltan == null) { Text("Recordar en 10 s") }
+                            OutlinedButton(onClick = vm::cancelarRecordatorio, shapes = ButtonDefaults.shapes(),
+                                enabled = faltan != null) { Text("Cancelar") }
+                        }
+                        CuentaRegresiva(faltan)
+                    }
+                    Tarjeta("Receptor de anuncios") {
+                        OpcionEscucha("Escuchar el modo avión", escuchando, vm::cambiarEscucha)
+                        OpcionEscucha("Escuchar el cargador", cargador, vm::cambiarEscuchaCargador)
+                    }
                 }
-                Tarjeta("Receptor de anuncios") {
-                    OpcionEscucha("Escuchar el modo avión", escuchando, vm::cambiarEscucha)
-                    HorizontalDivider()
-                    OpcionEscucha("Escuchar el cargador", cargador, vm::cambiarEscuchaCargador)
-                }
-                HistorialAvisos(avisos)
+                Box(Modifier.width(columna)) { HistorialAvisos(avisos) }
             }
         }
     }
@@ -145,9 +145,15 @@ fun PantallaAvisos(vm: AvisosViewModel) {
 
 @Composable
 private fun OpcionEscucha(texto: String, activo: Boolean, cambiar: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).toggleable(activo, role = Role.Switch, onValueChange = cambiar),
-        verticalAlignment = Alignment.CenterVertically) {
-        Text(texto, Modifier.weight(1f))
-        Switch(checked = activo, onCheckedChange = null)
+    val colores = MaterialTheme.colorScheme
+    val fondo by animateColorAsState(if (activo) colores.secondaryContainer else colores.surfaceContainer,
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(), label = "Fondo de escucha")
+    Surface(color = fondo, shape = MaterialTheme.shapes.medium) {
+        Row(Modifier.fillMaxWidth().toggleable(activo, role = Role.Switch, onValueChange = cambiar)
+            .heightIn(min = 56.dp).padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(texto, Modifier.weight(1f), style = if (activo) MaterialTheme.typography.bodyLargeEmphasized
+                else MaterialTheme.typography.bodyLarge)
+            Switch(checked = activo, onCheckedChange = null)
+        }
     }
 }
