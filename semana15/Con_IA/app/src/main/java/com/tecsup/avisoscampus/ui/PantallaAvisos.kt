@@ -1,5 +1,6 @@
 package com.tecsup.avisoscampus.ui
 
+import android.provider.Settings
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
@@ -52,7 +53,9 @@ fun PantallaAvisos(vm: AvisosViewModel) {
         if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
     }
     LaunchedEffect(vm, contexto) {
-        vm.eventos.collect { aviso -> Notificador.mostrar(contexto, aviso) }
+        vm.eventos.collect { aviso ->
+            if (!Notificador.mostrar(contexto, aviso)) vm.noSePudoMostrar()
+        }
     }
     val faltan by vm.faltan.collectAsState()
     val escuchando by vm.escuchandoAvion.collectAsState()
@@ -65,6 +68,7 @@ fun PantallaAvisos(vm: AvisosViewModel) {
         } else onDispose {}
     }
     val avisos by vm.avisos.collectAsState()
+    val mensaje by vm.mensaje.collectAsState()
     Scaffold(topBar = {
         TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
@@ -88,6 +92,17 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                             lanzador.launch(Manifest.permission.POST_NOTIFICATIONS)
                         else vm.permisoRespondido(true)
                     }) { Text("Permitir notificaciones") }
+                    mensaje?.let {
+                        Surface(color = MaterialTheme.colorScheme.errorContainer, shape = RoundedCornerShape(12.dp)) {
+                            Column(Modifier.padding(12.dp)) {
+                                Text(it, color = MaterialTheme.colorScheme.onErrorContainer)
+                                TextButton(onClick = {
+                                    contexto.startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                        .putExtra(Settings.EXTRA_APP_PACKAGE, contexto.packageName))
+                                }) { Text("Abrir ajustes") }
+                            }
+                        }
+                    }
                 }
                 Tarjeta("Avisos") {
                     Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
