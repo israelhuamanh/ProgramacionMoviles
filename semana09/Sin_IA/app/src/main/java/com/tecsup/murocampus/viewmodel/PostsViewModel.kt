@@ -65,4 +65,20 @@ class PostsViewModel(private val repo: PostRepository) : ViewModel() {
         seleccionado = null
         peticionDetalle?.cancel()
     }
+
+    private val _creacion = MutableStateFlow<UiState<Post>?>(null)
+    val creacion = _creacion.asStateFlow()
+
+    fun nuevaPublicacion() {
+        if (_creacion.value != UiState.Cargando) _creacion.value = null
+    }
+
+    fun publicar(titulo: String, texto: String) {
+        if (titulo.isBlank() || texto.isBlank() || _creacion.value == UiState.Cargando) return
+        _creacion.value = UiState.Cargando
+        viewModelScope.launch {
+            val nuevo = NuevoPost(userId = 1, title = titulo.trim(), body = texto.trim())
+            _creacion.value = repo.crear(nuevo).aEstado()
+        }
+    }
 }
