@@ -1,5 +1,13 @@
 package com.tecsup.avisoscampus.ui
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import com.tecsup.avisoscampus.model.PermisoUi
+import com.tecsup.avisoscampus.notificacion.Notificador
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +37,14 @@ internal fun Tarjeta(titulo: String, contenido: @Composable ColumnScope.() -> Un
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaAvisos(vm: AvisosViewModel) {
+    val contexto = LocalContext.current
+    val permiso by vm.permiso.collectAsState()
+    val lanzador = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        vm.permisoRespondido(it)
+    }
+    LaunchedEffect(contexto) {
+        if (Notificador.tienePermiso(contexto)) vm.permisoRespondido(true)
+    }
     Scaffold(topBar = {
         TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
@@ -37,7 +53,22 @@ fun PantallaAvisos(vm: AvisosViewModel) {
         Box(Modifier.fillMaxSize().padding(margen), contentAlignment = Alignment.TopCenter) {
             Column(Modifier.widthIn(max = 640.dp).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Tarjeta("Permiso de notificaciones") {}
+                Tarjeta("Permiso de notificaciones") {
+                    val (etiqueta, fondo, texto) = when (permiso) {
+                        PermisoUi.Concedido -> Triple("Permitido", Color(0xFFBCEFD3), Color(0xFF064527))
+                        PermisoUi.Denegado -> Triple("Denegado", MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer)
+                        PermisoUi.SinPedir -> Triple("Sin pedir", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Surface(shape = RoundedCornerShape(50), color = fondo, contentColor = texto) {
+                        Text(etiqueta, Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelLarge)
+                    }
+                    FilledTonalButton(onClick = {
+                        if (Build.VERSION.SDK_INT >= 33 && !Notificador.tienePermiso(contexto))
+                            lanzador.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        else vm.permisoRespondido(true)
+                    }) { Text("Permitir notificaciones") }
+                }
                 Tarjeta("Avisos") {}
                 Tarjeta("Recordatorio") {}
                 Tarjeta("Receptor de anuncios") {}

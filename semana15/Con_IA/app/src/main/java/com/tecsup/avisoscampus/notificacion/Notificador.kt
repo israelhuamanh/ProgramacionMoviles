@@ -1,5 +1,8 @@
 package com.tecsup.avisoscampus.notificacion
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -12,4 +15,8 @@ object Notificador {
             manager.createNotificationChannel(NotificationChannel(CANAL, "Avisos", NotificationManager.IMPORTANCE_DEFAULT))
         }
     }
+
+    fun tienePermiso(context: Context): Boolean =
+        Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(context,
+            Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 }
