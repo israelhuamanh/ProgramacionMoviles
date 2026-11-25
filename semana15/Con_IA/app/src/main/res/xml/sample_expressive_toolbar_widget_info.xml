@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/cl_description_expressive_toolbar"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:maxResizeHeight="@dimen/sample_expressive_toolbar_widget_max_resize_height"
+    android:maxResizeWidth="@dimen/sample_expressive_toolbar_widget_max_resize_width"
+    android:minHeight="@dimen/sample_expressive_toolbar_widget_min_height"
+    android:minResizeHeight="@dimen/sample_expressive_toolbar_widget_min_resize_height"
+    android:minResizeWidth="@dimen/sample_expressive_toolbar_widget_min_resize_width"
+    android:minWidth="@dimen/sample_expressive_toolbar_widget_min_width"
+    android:previewImage="@drawable/sample_expressive_toolbar_preview"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellHeight="@integer/sample_expressive_toolbar_target_cell_height"
+    android:targetCellWidth="@integer/sample_expressive_toolbar_target_cell_width"
+    android:widgetCategory="home_screen|keyguard" />

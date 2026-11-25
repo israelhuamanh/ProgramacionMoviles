@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AvisosCampus</string>
+    <string name="sample_expressive_toolbar_app_widget_name">AvisosCampus Expressive Toolbar</string>
+    <string name="cl_description_expressive_toolbar">Envía avisos inmediatos, recordatorios urgentes y pruebas de modo avión o cargador desde tu pantalla de inicio.</string>
+</resources>

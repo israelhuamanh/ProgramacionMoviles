@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val factory = AvisosViewModelFactory(AvisosRepositoryMemoria())
+        val factory = AvisosViewModelFactory(AvisosRepositoryMemoria)
         setContent {
             val oscuroSistema = isSystemInDarkTheme()
             var preferenciaOscuro by rememberSaveable { mutableStateOf<Boolean?>(null) }

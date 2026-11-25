@@ -9,10 +9,11 @@ interface AvisosRepository {
     val avisos: StateFlow<List<Aviso>>
     fun registrar(titulo: String, texto: String, origen: Origen): Aviso
 }
-class AvisosRepositoryMemoria : AvisosRepository {
+object AvisosRepositoryMemoria : AvisosRepository {
     private val historial = MutableStateFlow<List<Aviso>>(emptyList())
     override val avisos = historial.asStateFlow()
     private var siguiente = 1
+    @Synchronized
     override fun registrar(titulo: String, texto: String, origen: Origen): Aviso {
         val hora = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
         val aviso = Aviso(siguiente++, titulo, texto, origen, hora)

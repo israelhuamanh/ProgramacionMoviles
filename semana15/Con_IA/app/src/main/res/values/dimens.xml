@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="widget_margin">0dp</dimen>
+    <dimen name="widget_element_min_length">48dp</dimen>
+
+    <!-- shaped tool bar: sizes to have approximately 2x2 as default drop size,
+    resizable down to about 1x1 or 2x1 size and height at most ~2-cell high.
+    -->
+    <integer name="sample_expressive_toolbar_target_cell_width">2</integer>
+    <integer name="sample_expressive_toolbar_target_cell_height">2</integer>
+    <dimen name="sample_expressive_toolbar_widget_min_width">120dp</dimen>
+    <dimen name="sample_expressive_toolbar_widget_min_height">115dp</dimen>
+    <dimen name="sample_expressive_toolbar_widget_min_resize_width">56dp</dimen>
+    <dimen name="sample_expressive_toolbar_widget_min_resize_height">56dp</dimen>
+    <dimen name="sample_expressive_toolbar_widget_max_resize_width">624dp</dimen>
+    <dimen name="sample_expressive_toolbar_widget_max_resize_height">200dp</dimen>
+</resources>
