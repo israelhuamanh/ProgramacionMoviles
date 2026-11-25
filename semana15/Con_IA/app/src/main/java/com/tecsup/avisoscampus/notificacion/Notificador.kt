@@ -41,6 +41,7 @@ object Notificador {
             .setSmallIcon(R.drawable.ic_notificacion)
             .setContentTitle(aviso.titulo)
             .setContentText(aviso.texto)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(detalle(aviso)))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendiente)
             .setAutoCancel(true)
@@ -51,5 +52,11 @@ object Notificador {
         } catch (_: SecurityException) {
             false
         }
+    }
+
+    private fun detalle(aviso: Aviso): String = when (aviso.origen) {
+        Origen.BOTON -> "${aviso.texto}. Puedes consultar la hora de registro en el historial de AvisosCampus."
+        Origen.RECORDATORIO -> "${aviso.texto}. Abre tu práctica, revisa las indicaciones y comprueba que tu entrega esté completa."
+        Origen.MODO_AVION -> "Modo avión: ${aviso.texto}. El cambio se registró a las ${aviso.hora}."
     }
 }
