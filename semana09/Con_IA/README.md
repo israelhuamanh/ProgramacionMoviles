@@ -78,3 +78,9 @@ Las comprobaciones temporales se ejecutaron fuera del código de entrega. La bas
 4. **¿Qué pasa con el permiso y los campos desconocidos?** Android bloquea el acceso a la red si falta `INTERNET`. Con la configuración estricta predeterminada, un campo JSON nuevo puede romper la deserialización. `ignoreUnknownKeys = true` permite campos adicionales, pero un campo obligatorio ausente sigue siendo un error.
 5. **¿Por qué usar when sobre UiState?** Cada instante tiene un único estado. Un `when` exhaustivo obliga a representar cada caso. Tres variables independientes permitirían combinaciones ambiguas, como indicar éxito y error al mismo tiempo.
 6. **¿Qué cambiaría con un servicio real?** Tras un POST confirmado, incorporaría el objeto que devolvió el servidor al muro o recargaría la lista. El id definitivo serviría para abrir, editar o borrar el recurso en sesiones posteriores. JSONPlaceholder simula la creación y al recargar devuelve su conjunto original.
+
+## Fase 2 · mejora-ia
+
+Esta rama añade búsqueda por título, eliminación con confirmación desde el detalle y el encabezado HTTP `Accept: application/json`. La búsqueda respeta el filtro por usuario y funciona sobre la lista descargada. El servicio simula los borrados, de modo que una publicación eliminada puede reaparecer al recargar.
+
+Consulta las decisiones de implementación y las pruebas de estas tres mejoras en [PROMPTS.md](PROMPTS.md).
