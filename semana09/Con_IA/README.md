@@ -4,7 +4,7 @@ Aplicación Android del laboratorio 09 de Programación en Móviles. Permite lee
 
 ## Ejecutar en Android Studio
 
-Abre la carpeta que contiene `settings.gradle.kts`. Usa JDK 17 o 21 para Gradle, instala Android SDK 35, sincroniza el proyecto y ejecuta **app** en un dispositivo con Android 7.0 (API 24) o superior. Se necesita conexión para consultar el servicio. En Windows también puedes compilar con `.\gradlew.bat assembleDebug`.
+Abre la carpeta que contiene `settings.gradle.kts`. Usa JDK 17 o 21 para Gradle, instala Android SDK 36, sincroniza el proyecto y ejecuta **app** en un dispositivo con Android 7.0 (API 24) o superior. Se necesita conexión para consultar el servicio. En Windows también puedes compilar con `.\gradlew.bat assembleDebug`.
 
 ## Paquetes
 
@@ -44,6 +44,12 @@ flowchart LR
 ```
 
 Al tocar una tarjeta, la pantalla entrega el id al ViewModel. El repositorio obtiene la publicación y sus comentarios. Si cualquiera de las dos peticiones falla, el detalle ofrece un reintento. Al salir del detalle se cancela su corrutina. La lista conserva los datos en el ViewModel al rotar el dispositivo.
+
+## Diseño de la interfaz
+
+La cabecera índigo identifica el muro y la roseta se repite en las etiquetas de autor. La superficie continua agrupa las publicaciones y la cápsula junto al título indica cuántas coinciden con la búsqueda y el filtro. El color lima identifica las acciones de escribir y publicar. El detalle reserva un bloque de color para la publicación y agrupa los comentarios debajo.
+
+El tema usa Material 3 Expressive de Jetpack Compose. El diseño adapta los principios de forma, color, tamaño y agrupación de la [investigación de Google Design](https://design.google/library/expressive-material-design-google-research).
 
 ## Capturas del emulador
 

@@ -5,6 +5,7 @@ La herramienta utilizada fue **Codex**. El panel de Gemini en Android Studio sol
 | Prompt que escribí | Qué respondió la IA | Qué cambié o descarté | Por qué |
 | --- | --- | --- | --- |
 | «Actua como developer senior de android studio experto en UI/UX, necesito que me ayudes hacer esta tarea de android studio, para ello sigue todas las indicaciones que piden en el documento. Es importante que sigas todas las indicaciones. Mi profesor dice que podemos usar IA pra cualquier fase , asi que hazlo todo tu solo» | Codex implementó la app y eligió tres mejoras del laboratorio: borrado, búsqueda local y encabezado Accept. | El borrado comprueba el estado HTTP antes de retirar la tarjeta. La búsqueda usa los datos ya descargados. El encabezado se incorpora en un interceptor común. | Así se mantiene la separación entre pantalla, estado de presentación y red. Cada mejora se puede comprobar por separado. |
+| «necesito que la interfaz sea tipo material expressive 3» (con referencia de Google Design) | Codex aplicó el tema expresivo en Compose y rediseñó el muro, el detalle y el formulario. | Se agruparon las tarjetas y se dio un color compartido a los controles de creación y envío. | La agrupación facilita recorrer el contenido y el texto del botón hace visible la acción principal. |
 
 ## Decisiones y comprobaciones
 

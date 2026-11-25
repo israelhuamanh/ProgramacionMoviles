@@ -39,11 +39,11 @@ fun PantallaDetalle(vm: PostsViewModel, id: Int) {
             val (post, comentarios) = actual.datos
             LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 item {
-                    OutlinedCard(Modifier.fillMaxWidth()) {
-                        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("Usuario ${post.userId}", style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary)
-                            Text(post.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(30.dp, 30.dp, 30.dp, 8.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer) {
+                        Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            EtiquetaAutor(post.userId)
+                            Text(post.title, style = MaterialTheme.typography.headlineSmall)
                             Text(post.body)
                             TextButton(onClick = { confirmar = true }, enabled = borrado != UiState.Cargando) {
                                 Text(if (borrado == UiState.Cargando) "Eliminando…" else "Eliminar publicación",
@@ -54,10 +54,11 @@ fun PantallaDetalle(vm: PostsViewModel, id: Int) {
                         }
                     }
                 }
-                item { Text("Comentarios (${comentarios.size})", style = MaterialTheme.typography.titleMedium,
+                item { Text("Comentarios (${comentarios.size})", style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold) }
                 items(comentarios, key = { it.id }) { comentario ->
-                    Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium) {
+                    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp, 24.dp, 24.dp, 24.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainer) {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(comentario.email, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                             Text(comentario.body, style = MaterialTheme.typography.bodyMedium)
