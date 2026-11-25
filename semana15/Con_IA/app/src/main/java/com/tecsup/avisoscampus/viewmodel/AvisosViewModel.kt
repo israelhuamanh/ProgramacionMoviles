@@ -25,4 +25,24 @@ class AvisosViewModel(private val repo: AvisosRepository) : ViewModel() {
     fun avisarAhora() {
         viewModelScope.launch { emitir("Tarea lista", "Tu entrega fue registrada", Origen.BOTON) }
     }
+
+    private var trabajo: Job? = null
+    private val _faltan = MutableStateFlow<Int?>(null)
+    val faltan = _faltan.asStateFlow()
+
+    fun recordarEn(segundos: Int = 10) {
+        if (trabajo?.isCompleted == false) return
+        trabajo = viewModelScope.launch {
+            try {
+                for (restantes in segundos downTo 1) {
+                    _faltan.value = restantes
+                    delay(1000)
+                }
+                emitir("Recordatorio", "Revisa tu laboratorio pendiente", Origen.RECORDATORIO)
+            } finally {
+                _faltan.value = null
+            }
+        }
+    }
+    fun cancelarRecordatorio() { trabajo?.cancel() }
 }

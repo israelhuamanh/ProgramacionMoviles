@@ -34,7 +34,7 @@ internal fun Tarjeta(titulo: String, contenido: @Composable ColumnScope.() -> Un
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun PantallaAvisos(vm: AvisosViewModel) {
     val contexto = LocalContext.current
@@ -48,6 +48,7 @@ fun PantallaAvisos(vm: AvisosViewModel) {
     LaunchedEffect(vm, contexto) {
         vm.eventos.collect { aviso -> Notificador.mostrar(contexto, aviso) }
     }
+    val faltan by vm.faltan.collectAsState()
     Scaffold(topBar = {
         TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
@@ -75,7 +76,18 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 Tarjeta("Avisos") {
                     Button(onClick = vm::avisarAhora) { Text("Mostrar aviso") }
                 }
-                Tarjeta("Recordatorio") {}
+                Tarjeta("Recordatorio") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilledTonalButton(onClick = { vm.recordarEn() }, enabled = faltan == null) {
+                            Text("Recordar en 10 s")
+                        }
+                        OutlinedButton(onClick = vm::cancelarRecordatorio, enabled = faltan != null) {
+                            Text("Cancelar")
+                        }
+                    }
+                    faltan?.let { Text("Faltan $it s", style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary) }
+                }
                 Tarjeta("Receptor de anuncios") {}
                 Tarjeta("Historial") {}
             }
