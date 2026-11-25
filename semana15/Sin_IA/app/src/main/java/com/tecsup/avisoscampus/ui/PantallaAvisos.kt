@@ -64,6 +64,7 @@ fun PantallaAvisos(vm: AvisosViewModel) {
             onDispose { contexto.unregisterReceiver(receptor) }
         } else onDispose {}
     }
+    val avisos by vm.avisos.collectAsState()
     Scaffold(topBar = {
         TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
@@ -106,7 +107,7 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 Tarjeta("Receptor de anuncios") {
                     OpcionEscucha("Escuchar el modo avión", escuchando, vm::cambiarEscucha)
                 }
-                Tarjeta("Historial") {}
+                HistorialAvisos(avisos)
             }
         }
     }
