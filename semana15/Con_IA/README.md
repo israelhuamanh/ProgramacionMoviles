@@ -2,6 +2,16 @@
 
 Laboratorio 15 de Programación en Móviles. La aplicación registra avisos ficticios del campus y los envía al panel de Android. Permite programar un recordatorio de 10 segundos, cancelarlo y escuchar cambios de modo avión. Las cinco tarjetas comparten una sola pantalla desplazable.
 
+## Fase 2 · mejora-ia
+
+| Mejora | Cómo comprobarla |
+| --- | --- |
+| Canal Urgentes | Programa el recordatorio y abre sus ajustes desde el panel. El recordatorio usa Urgentes con importancia alta. El botón y los receptores usan Avisos. Android decide la presentación según los ajustes del usuario. |
+| Texto expandible | Genera un aviso y despliega su notificación. La vista compacta muestra el texto de la guía y la expandida añade el detalle. |
+| Receptor del cargador | Activa **Escuchar el cargador** y conecta o desconecta la alimentación del dispositivo. En el emulador puedes cambiar el estado de carga en los controles de batería. Cada transición añade una fila con su hora. |
+
+El registro de decisiones y una explicación de la mejora del cargador están en [PROMPTS.md](PROMPTS.md).
+
 ## Ejecutar
 
 1. Abre la carpeta del repositorio en Android Studio y sincroniza Gradle.
@@ -19,7 +29,9 @@ com.tecsup.avisoscampus/
 ├── model/Modelos.kt                   Aviso, Origen y PermisoUi
 ├── data/AvisosRepository.kt           Contrato e implementación en memoria
 ├── notificacion/Notificador.kt        Permiso, canal, publicación y PendingIntent
-├── receiver/ModoAvionReceiver.kt      Traduce el anuncio del sistema a un booleano
+├── receiver/
+│   ├── ModoAvionReceiver.kt           Escucha cambios de modo avión
+│   └── CargadorReceiver.kt            Escucha conexión y desconexión de alimentación
 ├── viewmodel/
 │   ├── AvisosViewModel.kt             Decide y registra cada aviso
 │   └── AvisosViewModelFactory.kt      Inyecta el repositorio
