@@ -1,5 +1,6 @@
 package com.tecsup.murocampus
 
+import androidx.compose.ui.semantics.*
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.activity.compose.BackHandler
@@ -28,12 +29,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             MuroTheme {
                 var id by rememberSaveable { mutableStateOf<Int?>(null) }
-                val volver = { vm.cerrarDetalle(); id = null }
-                BackHandler(enabled = id != null) { volver() }
-                Scaffold(topBar = { Cabecera(if (id != null) volver else null) }) { padding ->
+                var crear by rememberSaveable { mutableStateOf(false) }
+                val volver = { vm.cerrarDetalle(); id = null; crear = false }
+                BackHandler(enabled = id != null || crear) { volver() }
+                Scaffold(topBar = { Cabecera(if (id != null || crear) volver else null) }, floatingActionButton = {
+                    if (id == null && !crear) FloatingActionButton(onClick = { vm.nuevaPublicacion(); crear = true },
+                        modifier = Modifier.semantics { contentDescription = "Nueva publicación" }) {
+                        Text("+", style = MaterialTheme.typography.headlineMedium)
+                    }
+                }) { padding ->
                     Box(Modifier.padding(padding)) {
                         val seleccionado = id
-                        if (seleccionado == null) PantallaLista(vm) { id = it }
+                        if (crear) PantallaCrear(vm)
+                        else if (seleccionado == null) PantallaLista(vm) { id = it }
                         else {
                             LaunchedEffect(seleccionado) { vm.abrirSiNecesario(seleccionado) }
                             PantallaDetalle(vm, seleccionado)
