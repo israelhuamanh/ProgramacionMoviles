@@ -1,5 +1,6 @@
 package com.tecsup.avisoscampus.ui
 
+import com.tecsup.avisoscampus.receiver.CargadorReceiver
 import android.provider.Settings
 import android.content.Intent
 import android.content.IntentFilter
@@ -69,6 +70,18 @@ fun PantallaAvisos(vm: AvisosViewModel) {
     }
     val avisos by vm.avisos.collectAsState()
     val mensaje by vm.mensaje.collectAsState()
+    val cargador by vm.escuchandoCargador.collectAsState()
+    DisposableEffect(contexto, cargador) {
+        if (cargador) {
+            val receptor = CargadorReceiver(vm::alCambiarCargador)
+            val filtro = IntentFilter().apply {
+                addAction(Intent.ACTION_POWER_CONNECTED)
+                addAction(Intent.ACTION_POWER_DISCONNECTED)
+            }
+            ContextCompat.registerReceiver(contexto, receptor, filtro, ContextCompat.RECEIVER_NOT_EXPORTED)
+            onDispose { contexto.unregisterReceiver(receptor) }
+        } else onDispose {}
+    }
     Scaffold(topBar = {
         TopAppBar(title = { Text("AvisosCampus", fontWeight = FontWeight.Bold) },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
@@ -121,6 +134,8 @@ fun PantallaAvisos(vm: AvisosViewModel) {
                 }
                 Tarjeta("Receptor de anuncios") {
                     OpcionEscucha("Escuchar el modo avión", escuchando, vm::cambiarEscucha)
+                    HorizontalDivider()
+                    OpcionEscucha("Escuchar el cargador", cargador, vm::cambiarEscuchaCargador)
                 }
                 HistorialAvisos(avisos)
             }
